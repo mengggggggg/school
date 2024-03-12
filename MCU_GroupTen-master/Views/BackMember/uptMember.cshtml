@@ -1,0 +1,131 @@
+﻿@model MCU_GroupTen.Models.MemberModel
+@{
+    ViewBag.Title = "修改會員";
+    DateTime Member = Model.Member_Birth;
+    string Date = Member.ToString("yyyy-MM-dd");
+}
+@using (Html.BeginForm(ViewContext.RouteData.GetRequiredString("Action"), ViewContext.RouteData.GetRequiredString("Controller"), new { }, FormMethod.Post, new { @class = "form-horizontal row-border validate", @id = "UM_Form" }))
+{
+    @Html.AntiForgeryToken()
+    <div class="container">
+        <h2>修改會員</h2>
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            <label for="acnt">帳號:</label>
+            <label for="acnt">@Session["Back_Member_Account"]</label>
+        </div>
+        <div class="form-group">
+            <label for="">姓名:</label>
+            @Html.EditorFor(model => model.Member_Name, new { htmlAttributes = new { @class = "form-control", @type = "text" } })
+            @Html.ValidationMessageFor(model => model.Member_Name, "", new { @class = "text-danger" })
+        </div>
+        <div class="form-group">
+            <label for="">電子信箱(Email):</label>
+            @Html.EditorFor(model => model.Member_Mail, new { htmlAttributes = new { @class = "form-control", @type = "email" } })
+            @Html.ValidationMessageFor(model => model.Member_Mail, "", new { @class = "text-danger" })
+        </div>
+        <div class="form-group">
+            <label for="add">地址:</label>
+            @Html.EditorFor(model => model.Member_Address, new { htmlAttributes = new { @class = "form-control", @type = "text" } })
+            @Html.ValidationMessageFor(model => model.Member_Address, "", new { @class = "text-danger" })
+        </div>
+        <div class="form-group">
+            <label for="add">身分:</label>
+            @if (Model.Member_identity == "會員")
+            {
+                <select name="select" style="width: 250px; height: 40px;">
+                    <option value="" disabled>請選擇會員類別</option>
+                    <option value="會員" selected>會員</option>
+                    <option value="商家">商家</option>
+                    <option value="平台管理員">平台管理員</option>
+                </select>
+            }
+            else if (Model.Member_identity == "商家")
+            {
+                <select name="select" style="width: 250px; height: 40px;">
+                    <option value="" disabled>請選擇會員類別</option>
+                    <option value="會員">會員</option>
+                    <option value="商家" selected>商家</option>
+                    <option value="平台管理員">平台管理員</option>
+                </select>
+            }
+            else if (Model.Member_identity == "平台管理員")
+            {
+                <select name="select" style="width: 250px; height: 40px;">
+                    <option value="" disabled>請選擇會員類別</option>
+                    <option value="會員">會員</option>
+                    <option value="商家">商家</option>
+                    <option value="平台管理員" selected>平台管理員</option>
+                </select>
+            }
+        </div>
+        <div class="form-group">
+            <label for="birth">生日:</label>
+            <input class="form-control" type="date" value="@Date" id="Date" name="Date">
+        </div>
+        <div class="form-group">
+            <label for="birth">電話號碼:</label>
+            @Html.TextBoxFor(o => o.Member_Phone, new { @class = "form-control", @maxlength = "10" })
+            @*@Html.EditorFor(model => model.Member_Phone, new { htmlAttributes = new { @class = "form-control", @type = "text", @placeholder = "電話號碼" } })*@
+            @Html.ValidationMessageFor(model => model.Member_Phone, "", new { @class = "text-danger" })
+        </div>
+        <br />
+        <div class="form-group">
+            <label for="optradio">性別:</label>
+            @if (Html.DisplayFor(model => model.Member_Sex).ToString() == "M")
+            {
+                @Html.RadioButtonFor(model => model.Member_Sex, "M", new { @checked = "checked" }) @Html.Label("男")
+                @Html.RadioButtonFor(model => model.Member_Sex, "F") @Html.Label("女")
+            }
+            else if (Html.DisplayFor(model => model.Member_Sex).ToString() == "F")
+            {
+                @Html.RadioButtonFor(model => model.Member_Sex, "M") @Html.Label("男")
+                @Html.RadioButtonFor(model => model.Member_Sex, "F", new { @checked = "checked" }) @Html.Label("女")
+            }
+        </div>
+        <div class="form-group">
+            <button type="button" value="Create" class="btn btn-danger" onclick="Send();">更新</button>
+            <a href="@Url.Action("SelectMember", "BackMember")" class="btn btn-default">取消更新</a>
+            <br />
+        </div>
+    </div>
+}
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script type="text/javascript">
+    function Send() {
+        debugger;
+        //是否空值
+        if ($('#Member_Name').val() == "") {
+            swal("錯誤!", "請輸入名稱！", "error");
+            return false;
+        }
+        else if ($('#Member_Mail').val() == "") {
+            swal("錯誤!", "請輸入信箱！", "error");
+            return false;
+        }
+        else if ($('#Member_Address').val() == "") {
+            swal("錯誤!", "請輸入地址！", "error");
+            return false;
+        }
+        else if ($('#Date').val() == "") {
+            swal("錯誤!", "請輸入生日日期！", "error");
+            return false;
+        }
+        else if ($('#Member_Phone').val() == "") {
+            swal("錯誤!", "請輸入電話號碼！", "error");
+            return false;
+        }
+        //是否重複
+        else if ($('#Member_Sex').val() == "") {
+            swal("錯誤!", "請輸入性別！", "error");
+            return false;
+        }
+        else {
+            $('#UM_Form').submit();
+        }
+    }
+</script>
+

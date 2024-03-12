@@ -1,0 +1,168 @@
+﻿@model List<MCU_GroupTen.Models.Proshop>
+
+@{
+    ViewBag.Title = "所屬商品列表";
+}
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12">
+            <a type="button" class="btn btn-default" style="" href="@Url.Action("UploadforProduct", "BackProductFP")">新增商品</a>
+            <table class="table table-bordered">
+                <thead class="thead-light">
+                    <tr>
+                        <th scope="col"> </th>
+                        <th scope="col">商品名稱</th>
+                        <th scope="col">產品庫存</th>
+                        <th scope="col">產品價格</th>
+                        <th scope="col">產品銷量</th>
+                        <th scope="col">產品產地</th>
+                        <th scope="col">產品規格</th>
+                        <th scope="col">產品類型</th>
+                        <th scope="col">商品狀態</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var o in Model)
+                    {
+                        <tr>
+                            <th scope="row">商品資訊</th>
+                            <td>@Html.DisplayFor(modelItem => o.Product_Name)</td>
+                            <td>@Html.DisplayFor(modelItem => o.Product_Stock)</td>
+                            <td>@Html.DisplayFor(modelItem => o.Product_Price)</td>
+                            <td>@Html.DisplayFor(modelItem => o.Product_Sales)</td>
+                            <td>@Html.DisplayFor(modelItem => o.Product_Origin)</td>
+                            <td>@Html.DisplayFor(modelItem => o.Product_Spec)</td>
+                            <td>@Html.DisplayFor(modelItem => o.Product_Type)</td>
+                            @if (o.Product_Status == 0)
+                            {
+                                <td>正常上架</td>
+                            }
+                            else
+                            {
+                                <td>已下架</td>
+                            }
+                        </tr>
+                        <tr>
+                            <th scope="row">商品圖片</th>
+                            <td colspan="2">
+                                <img src="@DisplayImage(o.Product_Picture)" class="img-responsive" style="width:max-content;height:150px">
+                                @functions{
+                                    public string DisplayImage(byte[] imageData)
+                                    {
+                                        string src = string.Empty;
+                                        if (imageData != null)
+                                        {
+                                            string base64 = Convert.ToBase64String(imageData);
+                                            src = string.Format("data:image/gif;base64,{0}", base64);
+                                        }
+                                        return src;
+                                    }
+                                }
+                            </td>
+                            <td colspan="2" style="text-align:center">
+                                <a type="button" class="btn btn-default" style="position:center;margin:55px;" href="@Url.Action("uptForProduct", "BackProductFP", new { Product_ID = o.Product_ID })">修改</a>
+                            </td>
+                            <td colspan="2" style="text-align:center">
+                                <a style="position: center; margin: 55px; " class="btn btn-danger" onclick="deleteProduct(@o.Product_ID)"> 刪除 </a>
+                            </td>
+                            <td colspan="2" style="text-align:center">
+                                <div style="position: center; margin: 55px;">
+                                    <a style="" class="btn btn-primary" onclick="changednProduct(@o.Product_ID)"> 商品下架 </a>
+                                    <a style="" class="btn btn-primary" onclick="changeupProduct(@o.Product_ID)"> 恢復上架 </a>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <div>
+                <a type="button" class="btn btn-primary" style="" href="@Url.Action("SelectforStore", "BackStoreFS")">管理商家</a>
+                <a type="button" class="btn btn-primary" style="" href="@Url.Action("SelectforOrder", "BackOrderFO")">管理訂單</a>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script type="text/javascript">
+    $(function () {
+        if ('@ViewData["upmsg"]' != '') {
+             swal("成功!", '@ViewData["upmsg"]', "success");
+        }
+        else if ('@ViewData["delp"]' != '') {
+             swal("成功!", '@ViewData["delp"]', "success");
+        }
+    });
+    function deleteProduct(id) {
+        swal({
+            title: "是否確定刪除?",
+            icon: "warning",
+            buttons: {
+                confirm: {
+                    text: "是",
+                    value: "true"
+                },
+                danger: {
+                    text: "否",
+                    value: "false"
+                }
+            }
+        }).then((value) => {
+            if (value == "true") {
+                location.href = "/BackProductFP/delForProduct?Product_ID="+id;
+            }
+            else if (value == "false") {
+                location.href = "@Url.Action("SelectforProduct", "BackProductFP")";
+            }
+        });
+    }
+
+    function changeupProduct(id) {
+        swal({
+            title: "是否確定恢復上架?",
+            icon: "warning",
+            buttons: {
+                confirm: {
+                    text: "是",
+                    value: "true"
+                },
+                danger: {
+                    text: "否",
+                    value: "false"
+                }
+            }
+        }).then((value) => {
+            if (value == "true") {
+                location.href = "/BackProductFP/chgupProduct?Pid="+id;
+            }
+            else if (value == "false") {
+                location.href = "@Url.Action("SelectProduct", "BackProduct")";
+            }
+        });
+    }
+    function changednProduct(id) {
+        swal({
+            title: "是否確定下架?",
+            icon: "warning",
+            buttons: {
+                confirm: {
+                    text: "是",
+                    value: "true"
+                },
+                danger: {
+                    text: "否",
+                    value: "false"
+                }
+            }
+        }).then((value) => {
+            if (value == "true") {
+                location.href = "/BackProductFP/chgdnProduct?Pid="+id;
+            }
+            else if (value == "false") {
+                location.href = "@Url.Action("SelectProduct", "BackProduct")";
+            }
+        });
+    }
+</script>

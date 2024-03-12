@@ -1,0 +1,105 @@
+﻿@model MCU_GroupTen.Models.Proshop
+@{
+    ViewBag.Title = "加入商家";
+}
+<body>
+    @using (Html.BeginForm(ViewContext.RouteData.GetRequiredString("Action"), ViewContext.RouteData.GetRequiredString("Controller"), new { }, FormMethod.Post, new { @class = "form-horizontal row-border validate", @id = "US_Form", @enctype = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken()
+        <div class="container">
+            <h2>加入商家</h2>
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="form-group">
+                <label for="acnt">商家名稱:</label>
+                @Html.EditorFor(model => model.Store_Name, new { htmlAttributes = new { @class = "form-control", @placeholder = "名稱" } })
+                @Html.ValidationMessageFor(model => model.Store_Name, "", new { @class = "text-danger" })
+                <button type="button" value="Create" class="btn btn-danger" onclick="check_Store_Name();">檢查</button>
+            </div>
+            <div class="form-group">
+                <label for="pwd">商家介紹:</label>
+                @Html.EditorFor(model => model.Store_Introduce, new { htmlAttributes = new { @class = "form-control", @onchange = "check_change();", @type = "text", @placeholder = "介紹" } })
+                @Html.ValidationMessageFor(model => model.Store_Introduce, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group">
+                <label for="birth">商店開始日:</label>
+                @Html.EditorFor(model => model.Store_Startdate, new { htmlAttributes = new { @class = "form-control", @type = "date", @placeholder = "日期" } })
+                @Html.ValidationMessageFor(model => model.Store_Startdate, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group">
+                <input type="file" accept=".png, .jpg, .jpeg" name="File" id="File" />
+            </div>
+            <div class="form-group">
+                <button type="button" value="Create" class="btn btn-default" onclick="Send();">加入</button>
+                <a type="button" class="btn btn-default" style="" href="@Url.Action("SelectforStore", "BackStoreFS")">返回</a>
+
+                <br />
+            </div>
+        </div>
+    }
+
+    @section Scripts {
+        @Scripts.Render("~/bundles/jqueryval")
+    }
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+        if ('@ViewData["usmsg"]' != '') {
+             swal("成功!", '@ViewData["usmsg"]', "success");
+        }
+        });
+        function check_Store_Name() {
+        debugger;
+        if ($("#Store_Name").val() == "") {
+            swal("錯誤!", "請輸入商家名稱!", "error");
+            return false;
+        }
+        var Model = {
+            Store_Name: $("#Store_Name").val(),
+        };
+        $.ajax({
+            url: '@Url.Action("check_Store_Name", "BackStore")',
+            data: Model,
+            type: 'POST',
+            cache: false,
+            async: false,
+            success: function (data) {
+                if (data != '') {
+                    if (data == "Y") {
+                        swal("成功!", "商家名稱驗證成功!", "success");
+                        return true;
+                    }
+                    else {
+                        $("#Store_Name").val('');
+                        $("#Store_Name").focus();
+                        swal("錯誤!", "已有此商店名稱，請更換您的名稱!", "error");
+                        return false;
+                    }
+                }
+            }
+        });
+    }
+    function Send() {
+        debugger;
+        check_Store_Name();
+        if ($('#File').val() == "") {
+            swal("錯誤!", "請匯入圖片！", "error");
+            return false;
+        }
+        else if ($('#Store_Name').val() == "") {
+            swal("錯誤!", "請輸入名稱！", "error");
+            return false;
+        }
+        else if ($('#Store_Introduce').val() == "") {
+            swal("錯誤!", "請輸入介紹！", "error");
+            return false;
+        }
+        else if ($('#Store_Startdate').val() == "") {
+            swal("錯誤!", "請輸入日期！", "error");
+            return false;
+        }
+        else {
+            $('#US_Form').submit();
+        }
+    }
+    </script>
+</body>

@@ -1,0 +1,318 @@
+﻿@model List<MCU_GroupTen.Models.Checkout>
+@{
+    ViewBag.Title = "結帳頁面";
+    var ID = 0;
+    int total = 0;
+    int a = -1;
+    var num = 0;
+}
+<body>
+
+    <style>
+        body {
+            background-color: #e5ffe5;
+            font-family: 'Open Sans', sans-serif;
+        }
+
+        div {
+            /* 字體屬性 */
+            font-family: Arial;
+            font-style: normal;
+            font-weight: 600;
+        }
+
+        body, button, input, select, textarea, h1, h2, h3, h4, h5, h6 {
+            font-family: Microsoft YaHei,'宋體', Tahoma, Helvetica, Arial, "\5b8b\4f53", sans-serif;
+        }
+    </style>
+    <div class="container">
+        <h2 class="text-center">訂單結帳</h2>
+        <div class="col-sm-12">
+            <form method="post" id="cs" action="">
+                <div class="panel panel-primary">
+
+                    @for (var i = 0; i < Model.Count; i++)
+                    {
+                        if (i > 0)
+                        {
+                            if (Model[i].Store_ID != Model[i - 1].Store_ID)
+                            {
+                                ID = Model[i].Store_ID;
+                                total = 0;
+                                <div class="panel-heading" style="font-size:24px;">商品明細</div>
+
+                                for (var j = i; j < Model.Count; j++)
+                                {
+                                    if (Model[j].Store_ID == Model[i].Store_ID)
+                                    {
+                                        <div class="panel-body">
+                                            <div class="col-sm-2">
+                                                <h3>商品照片</h3>
+                                                <img src="@DisplayImage(Model[j].Product_Picture)" class="img-responsive" style="width:max-content;height:150px">
+                                                @functions{
+                                                    public string DisplayImage(byte[] imageData)
+                                                    {
+                                                        string src = string.Empty;
+                                                        if (imageData != null)
+                                                        {
+                                                            string base64 = Convert.ToBase64String(imageData);
+                                                            src = string.Format("data:image/gif;base64,{0}", base64);
+                                                        }
+                                                        return src;
+                                                    }
+                                                }
+                                            </div>
+                                            <div class="col-sm-2">
+                                                <h3>商品名稱</h3>
+                                                <p style="font-size:20px">@Html.DisplayFor(modelItem => Model[j].Product_Name)</p>
+                                            </div>
+                                            <div class="col-sm-3 ">
+                                                <h3>商家名稱</h3>
+                                                <p style="font-size:20px">@Html.DisplayFor(modelItem => Model[j].Store_Name)</p>
+                                            </div>
+                                            <div class="col-sm-1">
+                                                <h3>規格</h3>
+                                                <p style="font-size:20px">@Html.DisplayFor(modelItem => Model[j].Product_Spec)</p>
+                                            </div>
+                                            <div class="col-sm-1">
+                                                <h3>單價</h3>
+                                                <p style="font-size:20px">@Html.DisplayFor(modelItem => Model[j].Product_Price)</p>
+                                            </div>
+                                            <div class="col-sm-1">
+                                                <h3>數量</h3>
+                                                <p style="font-size:20px">@Html.DisplayFor(modelItem => Model[j].Product_Count)</p>
+                                            </div>
+                                            <div class="col-sm-2">
+                                                <h3>總計</h3>
+                                                <p style="font-size:20px">@Html.DisplayFor(modelItem => Model[j].Order_Amount)</p>
+                                            </div>
+                                            <input type="checkbox" style="display:none" checked name="Pc" value="@Html.DisplayFor(modelItem => Model[j].Product_Count)">
+                                            <input type="checkbox" style="display:none" checked name="Oid" value="@Html.DisplayFor(modelItem => Model[j].Order_Details_ID)">
+                                        </div>
+                                        total += (int)(Model[j].Order_Amount);
+                                        a++;
+                                        <input type="checkbox" style="display:none" checked name="@Html.DisplayFor(modelItem => Model[j].Store_ID)total" value="@total">
+                                    }
+                                }
+                                <div class="panel-body" style="display: inline;">
+                                    <div class="col-sm-2 sidenav">
+                                    </div>
+                                    <div class="col-sm-3 sidenav">
+                                        <select name="@Html.DisplayFor(modelItem => Model[a].Store_ID)pay" style="width: 250px; height: 40px;">
+                                            <option value="" disabled>請選擇付費方式</option>
+                                            <option value="home" selected>貨到付款</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-3 sidenav">
+                                        <select name="@Html.DisplayFor(modelItem => Model[a].Store_ID)way" style="width: 250px; height: 40px;">
+                                            <option value="" disabled>請選擇寄送方式</option>
+                                            <option value="home" selected>宅配到家</option>
+                                            <option value="7-11">7-11超商自取</option>
+                                            <option value="family">全家超商自取</option>
+                                            <option value="OK">OK超商自取</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-4 sidenav">
+                                        <textarea id="address @num" class="form-control" placeholder="請輸入宅配地址或超商店名" style="height: 40px;border:solid " maxlength="50" name="@Html.DisplayFor(modelItem => Model[a].Store_ID)add"></textarea>
+                                        @{
+                                            num++;
+                                        }
+                                    </div>
+                                </div>
+                                <div class="panel-body" style="display: inline;">
+                                    <div class="col-sm-8 sidenav">
+                                    </div>
+                                    <div class="col-sm-4 sidenav">
+                                        <textarea class="form-control" id="@Html.DisplayFor(modelItem => Model[a].Store_ID)note" placeholder="請輸入備註(最多50字)" style="height: 100px; border:solid;" maxlength="50" name="@Html.DisplayFor(modelItem => Model[a].Store_ID)note"></textarea>
+                                    </div>
+                                </div>
+                                <input type="hidden" name="checkBoxValue" value="" id="checkBoxValue">
+                                <input type="hidden" name="checkBoxValuec" value="" id="checkBoxValuec">
+                                <div class="panel-body">
+                                    <div class="col-sm-12">
+                                        <h1 class="text-left">總計</h1>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <h3>商品總金額:@total</h3>
+                                        <h3>折價金額:0</h3>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <br /> <br />
+                                        <h2 class="text-right">訂單總金額:@total</h2>
+
+                                    </div>
+                                </div>
+                                <div class="panel-footer" style="height:50px">
+                                </div>
+
+                            }
+                        }
+                        else
+                        {
+                            ID = Model[i].Store_ID;
+
+                            <div class="panel-heading" style="font-size:24px;margin:auto">商品明細</div>
+
+                            for (var j = 0; j < Model.Count; j++)
+                            {
+                                if (j > 0)
+                                {
+                                    if (Model[j].Store_ID != Model[j - 1].Store_ID)
+                                    {
+
+                                        break;
+                                    }
+                                }
+                                <div class="panel-body">
+                                    <div class="col-sm-2">
+                                        <h3>商品照片</h3>
+                                        <img src="@DisplayImage(Model[j].Product_Picture)" class="img-responsive" style="width:max-content;height:150px">
+
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <h3>商品名稱</h3>
+                                        <p style="font-size:20px">@Html.DisplayFor(modelItem => Model[j].Product_Name)</p>
+                                    </div>
+                                    <div class="col-sm-3 ">
+                                        <h3>商家名稱</h3>
+                                        <p style="font-size:20px">@Html.DisplayFor(modelItem => Model[j].Store_Name)</p>
+                                    </div>
+                                    <div class="col-sm-1">
+                                        <h3>規格</h3>
+                                        <p style="font-size:20px">@Html.DisplayFor(modelItem => Model[j].Product_Spec)</p>
+                                    </div>
+                                    <div class="col-sm-1">
+                                        <h3>單價</h3>
+                                        <p style="font-size:20px">@Html.DisplayFor(modelItem => Model[j].Product_Price)</p>
+                                    </div>
+                                    <div class="col-sm-1">
+                                        <h3>數量</h3>
+                                        <p style="font-size:20px">@Html.DisplayFor(modelItem => Model[j].Product_Count)</p>
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <h3>總計</h3>
+                                        <p style="font-size:20px">@Html.DisplayFor(modelItem => Model[j].Order_Amount)</p>
+                                    </div>
+                                    <input type="checkbox" style="display:none" checked name="Pc" value="@Html.DisplayFor(modelItem => Model[j].Product_Count)">
+                                    <input type="checkbox" style="display:none" checked name="Oid" value="@Html.DisplayFor(modelItem => Model[j].Order_Details_ID)">
+                                </div>
+                                total += (int)(Model[j].Order_Amount);
+                                a++;
+                                <input type="checkbox" style="display:none" checked name="@Html.DisplayFor(modelItem => Model[j].Store_ID)total" value="@total">
+                            }
+
+                            <div class="panel-body" style="display: inline;">
+                                <div class="col-sm-2 sidenav">
+                                </div>
+                                <div class="col-sm-3 sidenav">
+                                    <select name="@Html.DisplayFor(modelItem => Model[a].Store_ID)pay" style="width: 250px; height: 40px;">
+                                        <option value="" disabled>請選擇付費方式</option>
+                                        <option value="home" selected>貨到付款</option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-3 sidenav">
+                                    <select name="@Html.DisplayFor(modelItem => Model[a].Store_ID)way" style="width: 250px; height: 40px;">
+                                        <option value="" disabled>請選擇寄送方式</option>
+                                        <option value="home" selected>宅配到家</option>
+                                        <option value="7-11">7-11超商自取</option>
+                                        <option value="family">全家超商自取</option>
+                                        <option value="OK">OK超商自取</option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-4 sidenav">
+                                    <textarea id="address @num" class="form-control" placeholder="請輸入宅配地址或超商店名" style="height: 40px;border:solid " maxlength="50" name="@Html.DisplayFor(modelItem => Model[a].Store_ID)add"></textarea>
+                                    @{
+                                        num++;
+                                    }
+                                </div>
+                            </div>
+                            <div class="panel-body" style="display: inline;">
+                                <div class="col-sm-8 sidenav">
+                                </div>
+                                <div class="col-sm-4 sidenav">
+                                    <textarea class="form-control" id="@Html.DisplayFor(modelItem => Model[a].Store_ID)note" placeholder="請輸入備註(最多50字)" style="height: 100px; border:solid;" maxlength="50" name="@Html.DisplayFor(modelItem => Model[a].Store_ID)note"></textarea>
+                                </div>
+                            </div>
+                            <input type="hidden" name="checkBoxValue" value="" id="checkBoxValue">
+                            <input type="hidden" name="checkBoxValuec" value="" id="checkBoxValuec">
+                            <div class="panel-body">
+                                <div class="col-sm-12">
+                                    <h1 class="text-left">總計</h1>
+                                </div>
+
+                                <div class="col-sm-6">
+                                    <h3>商品總金額:@total</h3>
+                                    <h3>折價金額:0</h3>
+                                </div>
+                                <div class="col-sm-12">
+                                    <br /> <br />
+                                    <h2 class="text-right">訂單總金額:@total</h2>
+                                </div>
+
+                            </div>
+                            <div class="panel-footer" style="height:50px">
+                            </div>
+
+                        }
+                    }
+                </div>
+
+                <div class="panel panel-primary" style="height: 90px;">
+                    <div class="col-sm-6">
+                        <h3 class="text-left">全部訂單總金額:@ViewBag.totally</h3>
+                    </div>
+                    <div class="col-sm-12">
+                        <button type="button" onclick="getTheCheckBoxValue();" form="cs" class="btn btn-danger btn-block">送出訂單</button>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+    <br>
+</body>
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script type="text/javascript">
+    function getTheCheckBoxValue() {
+        var test = $("input[name='Oid']:checked");
+        var checkBoxValue = "";
+        test.each(function () {
+            checkBoxValue += $(this).val() + ",";
+        })
+        checkBoxValue = checkBoxValue.substring(0, checkBoxValue.length - 1);
+        $("#checkBoxValue").val(checkBoxValue);
+
+        var test = $("input[name='Pc']:checked");
+        var checkBoxValuec = "";
+        test.each(function () {
+            checkBoxValuec += $(this).val() + ",";
+        })
+        checkBoxValuec = checkBoxValuec.substring(0, checkBoxValuec.length - 1);
+        $("#checkBoxValuec").val(checkBoxValuec);
+
+        var x = document.getElementById("address");
+        $("#cs").attr("action", "@Url.Action("Checkoutsend", "Checkout", new { })");
+        debugger;
+        var addnum =@num;
+        var add = chkaddress(addnum);
+        if (add == "false") {
+            swal("錯誤!", "請輸入地址!", "error");
+            return false;
+        }
+        else {
+            $("#cs").submit();
+        }
+    }
+    function chkaddress(addnum) {
+        var msg = "true";
+        var add = "";
+        for (i = 0; i < addnum; i++) {
+            add = document.getElementById("address " + i).value;
+            if (add == "") {
+                msg = "false";
+                break;
+            }
+        }
+        return msg;
+    }
+</script>

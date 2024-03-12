@@ -1,0 +1,317 @@
+﻿@model List<MCU_GroupTen.Models.Proshop>
+@{
+    ViewBag.Title = "商家";
+}
+<head>
+    <style>
+        body {
+            background-color: #e5ffe5;
+            font-family: 'Open Sans', sans-serif;
+        }
+
+        .container2 {
+            display: flex;
+        }
+
+        .card2 {
+            display: flex;
+            height: 310px;
+            width: 225px;
+            background-color: #98D2EB;
+            border-radius: 10px;
+            box-shadow: -1rem 0 3rem #000;
+            /*   margin-left: -50px; */
+            transition: 0.4s ease-out;
+            position: relative;
+            left: 0px;
+        }
+
+
+            .card2:not(:first-child) {
+                margin-left: -50px;
+            }
+
+
+            .card2:hover ~ .card {
+                position: relative;
+                left: 50px;
+                transition: 0.4s ease-out;
+            }
+
+            .card2:hover .filledbar {
+                width: 120px;
+                transition: 0.4s ease-out;
+            }
+
+            .card2:hover .stroke {
+                stroke-dashoffset: 100;
+                transition: 0.6s ease-out;
+            }
+
+        .card {
+            display: flex;
+            height: 310px;
+            width: 225px;
+            background-color: rgb(202, 236, 198);
+            border-radius: 10px;
+            box-shadow: -1rem 0 3rem #000;
+            /*   margin-left: -50px; */
+            transition: 0.4s ease-out;
+            position: relative;
+            left: 0px;
+            margin-top: 25px;
+        }
+
+
+            .card:not(:first-child) {
+                margin-left: -50px;
+            }
+
+
+            .card:hover ~ .card {
+                position: relative;
+                left: 50px;
+                transition: 0.4s ease-out;
+            }
+
+            .card:hover .filledbar {
+                width: 120px;
+                transition: 0.4s ease-out;
+            }
+
+            .card:hover .stroke {
+                stroke-dashoffset: 100;
+                transition: 0.6s ease-out;
+            }
+
+        .title {
+            color: black;
+            font-weight: 300;
+            position: absolute;
+            left: 20px;
+            top: 15px;
+        }
+
+        .bar {
+            position: absolute;
+            top: 75px;
+            left: 20px;
+            height: 5px;
+            width: 180px;
+        }
+
+        .emptybar {
+            background-color: #2e3033;
+            width: 100%;
+            height: 100%;
+        }
+
+        .filledbar {
+            position: absolute;
+            top: 0px;
+            z-index: 3;
+            width: 0px;
+            height: 100%;
+            background: rgb(0,154,217);
+            background: linear-gradient(90deg, rgba(0,154,217,1) 0%, rgba(217,147,0,1) 65%, rgba(255,186,0,1) 100%);
+            transition: 0.6s ease-out;
+        }
+
+        .stroke {
+            stroke: white;
+            stroke-dasharray: 360;
+            stroke-dashoffset: 360;
+            transition: 0.6s ease-out;
+        }
+
+        .slide-arrow {
+            position: absolute;
+            top: 50%;
+            margin-top: -15px;
+        }
+
+        .prev-arrow {
+            left: -67px;
+            width: 0;
+            height: 0;
+            font-size: 50px;
+        }
+
+        .next-arrow {
+            right: -20px;
+            width: 0;
+            height: 0;
+            font-size: 50px;
+        }
+
+        div {
+            /* 字體屬性 */
+            font-family: Arial;
+            font-style: normal;
+            font-weight: 600;
+        }
+
+        body, button, input, select, textarea, h1, h2, h3, h4, h5, h6 {
+            font-family: Microsoft YaHei,'宋體', Tahoma, Helvetica, Arial, "\5b8b\4f53", sans-serif;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12 text-left" style="border: 4px double; padding-bottom: 20px;">
+                <div class="col-md-4">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h2 style="text-align:left">
+                                @foreach (var model in Model)
+                                {
+                                    if (@Html.DisplayFor(modelItem => model.Store_Name) != null)
+                                    {
+                                        @Html.DisplayFor(modelItem => model.Store_Name)
+                                        break;
+                                    }
+                                }
+                            </h2>
+                        </div>
+                        <div class="col-md-12">
+                            @foreach (var model in Model)
+                            {
+                                <img src="@DisplayImage(model.Store_Picture)" width="300" height="300">
+                                @functions{
+                                    public string DisplayImage(byte[] imageData)
+                                    {
+                                        string src = string.Empty;
+                                        if (imageData != null)
+                                        {
+                                            string base64 = Convert.ToBase64String(imageData);
+                                            src = string.Format("data:image/gif;base64,{0}", base64);
+                                        }
+                                        return src;
+                                    }
+                                }
+                                break;
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <h3>
+                        商家介紹:
+                        <br />
+                        <br />
+                        @foreach (var model in Model)
+                        {
+                            if (@Html.DisplayFor(modelItem => model.Store_Introduce) != null)
+                            {
+                                @Html.DisplayFor(modelItem => model.Store_Introduce)
+                                break;
+                            }
+                        }
+                    </h3>
+                </div>
+                <div class="col-md-12">
+                </div>
+
+                <div class="col-md-12" style="border-top:4px double grey; border-bottom:4px double grey; margin:4px; background-color:#f9f9f9">
+                    <div class="col-xs-offset-0 text-center">
+                        <p style="font-size: 30px;">篩選</p>
+                    </div>
+
+                    @foreach (var model in Model)
+                    {
+                        if (model.Product_Name != null)
+                        {
+                            <div class="col-xs-offset-0 text-center " style="display:inline">
+                                <form action="@Url.Action("Storesort", "Proshop", new {Sid = model.Store_ID })" method="post">
+                                    <select name="type" onchange="submit()" class="btn-warning" style="width: 130px;height:23px; color:black; text-align:center">
+                                        <option value="">商品類型</option>
+                                        <option value="fruit">水果類</option>
+                                        <option value="veg">蔬菜類</option>
+                                        <option value="meat">肉類</option>
+                                    </select>
+                                    <select name="price" onchange="submit()" class="btn-warning" style="width: 130px;height:23px; color:black; text-align:center">
+                                        <option value="">商品價格</option>
+                                        <option value="pdesc">高-低</option>
+                                        <option value="pasc">低-高</option>
+                                    </select>
+                                    <select name="date" onchange="submit()" class="btn-warning" style="width: 130px;height:23px; color:black; text-align:center">
+                                        <option value="">上架日期</option>
+                                        <option value="ddesc">晚-早</option>
+                                        <option value="dasc">早-晚</option>
+                                    </select>
+                                    <select name="sale" onchange="submit()" class="btn-warning" style="width: 130px;height:23px; color:black; text-align:center">
+                                        <option value="">銷量</option>
+                                        <option value="sdesc">高-低</option>
+                                        <option value="sasc">低-高</option>
+                                    </select>
+                                </form>
+
+                            </div>
+                            break;
+                        }
+                    }
+
+                </div>
+
+                @if (Session["sort"].ToString() == "error")
+                {
+                    <div class="col-sm-12">
+                        <div class="thumbnail">
+                            <center>
+                                <p>
+                                    暫無相關商品上架
+                                </p>
+                            </center>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    foreach (var model in Model)
+                    {
+                        if (model.Product_Name != null)
+                        {
+                            <div class="col-xs-8 col-sm-6 col-md-3">
+                                <div class="card">
+                                    <h4 class="title text-center">@Html.DisplayFor(modelItem => model.Product_Name)</h4>
+                                    <div class="bar">
+                                        <div class="emptybar"></div>
+                                        <div class="filledbar"></div>
+                                        <div class="thumbnail" style="max-inline-size: auto; height: 215px">
+                                            <a href="@Url.Action("Product", "Proshop", new { Pid = model.Product_ID, Sid = model.Store_ID })" class="right">
+                                                <img src="@DisplayImage(model.Product_Picture)" style="width:max-content;height:150px">
+                                            </a>
+                                            <a href="@Url.Action("Product", "Proshop", new { Pid = model.Product_ID, Sid = model.Store_ID })" class="right">
+
+                                                <p style="font-size:medium" class="text-center"><strong>每 @Html.DisplayFor(modelItem => model.Product_Spec)@Html.DisplayFor(modelItem => model.Product_Price)元</strong></p>
+                                                <p style="font-size:medium" class="text-center"><strong>查看商品</strong></p>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="col-sm-12">
+                                <div class="thumbnail">
+                                    <center>
+                                        <p>
+                                            暫無商品上架
+                                        </p>
+                                    </center>
+                                </div>
+                            </div>
+                            break;
+                        }
+                    }
+                }
+
+
+            </div>
+        </div>
+    </div>
+</body>

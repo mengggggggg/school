@@ -1,0 +1,158 @@
+﻿@model List<MCU_GroupTen.Models.Act>
+@{
+    ViewBag.Title = "活動清單";
+}
+<style>
+    table {
+        border-collapse: collapse;
+        width: 770px;
+        /*自動斷行*/
+        word-wrap: break-word;
+        table-layout: fixed;
+    }
+</style>
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12">
+            <a type="button" class="btn btn-default" style="" href="@Url.Action("UploadAct", "BackActivity")">新增活動</a>
+            <table class="table table-bordered">
+                <thead class="thead-light">
+                    <tr>
+                        <th scope="col"> </th>
+                        <th scope="col">活動資訊</th>
+                        <th scope="col">活動網址</th>
+                        <th scope="col">宣傳開始日</th>
+                        <th scope="col">活動狀態</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var o in Model)
+                    {
+                        <tr>
+                            <th scope="row">活動資訊</th>
+                            <td>@Html.DisplayFor(modelItem => o.Activity_Information)</td>
+                            <td>@Html.DisplayFor(modelItem => o.Activity_URL)</td>
+                            <td>@Html.DisplayFor(modelItem => o.Activity_StartDate)</td>
+                            @if (o.Activity_Status == 0)
+                            {
+                                <td>活動正常舉行</td>
+                            }
+                            else
+                            { 
+                                <td>活動已結束</td>
+                            }
+                        </tr>
+                        <tr>
+                            <th scope="row">活動圖片</th>
+                            <td colspan="3">
+                                <img src="@DisplayImage(o.Activity_Picture)" class="img-responsive" style="width:max-content;height:150px">
+                                @functions{
+                                    public string DisplayImage(byte[] imageData)
+                                    {
+                                        string src = string.Empty;
+                                        if (imageData != null)
+                                        {
+                                            string base64 = Convert.ToBase64String(imageData);
+                                            src = string.Format("data:image/gif;base64,{0}", base64);
+                                        }
+                                        return src;
+                                    }
+                                }
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td colspan="1" style="text-align:right"><a type="button" style="" class="btn btn-default" href="@Url.Action("uptAct", "BackActivity", new { Activity_ID = o.Activity_ID })">修改</a></td>
+                            <td colspan="1" style="text-align:right"><a style="" class="btn btn-danger" onclick="deleteAct(@o.Activity_ID)">刪除</a></td>
+                            <td colspan="1" style="text-align:right"><a style="" class="btn btn-default" onclick="changednAct(@o.Activity_ID)">結束活動</a></td>
+                            <td colspan="1" style="text-align:right"><a style="" class="btn btn-danger" onclick="changeupAct(@o.Activity_ID)">重新開始活動</a></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script type="text/javascript">
+    $(function () {
+        if ('@ViewData["uamsg"]' != '') {
+             swal("成功!", '@ViewData["uamsg"]', "success");
+        }
+        else if ('@ViewData["dela"]' != '') {
+             swal("成功!", '@ViewData["delm"]', "success");
+        }
+    });
+    function deleteAct(id) {
+        swal({
+            title: "是否確定刪除?",
+            icon: "warning",
+            buttons: {
+                confirm: {
+                    text: "是",
+                    value: "true"
+                },
+                danger: {
+                    text: "否",
+                    value: "false"
+                }
+            }
+        }).then((value) => {
+            if (value == "true") {
+                location.href = "/BackActivity/delAct?Activity_ID=" + id;
+            }
+            else if (value == "false") {
+                location.href = "@Url.Action("SelectActivity", "BackActivity")";
+            }
+        });
+    }
+
+
+    function changeupAct(id) {
+        swal({
+            title: "是否確定重新開始活動?",
+            icon: "warning",
+            buttons: {
+                confirm: {
+                    text: "是",
+                    value: "true"
+                },
+                danger: {
+                    text: "否",
+                    value: "false"
+                }
+            }
+        }).then((value) => {
+            if (value == "true") {
+                location.href = "/BackActivity/chgupAct?Aid=" + id;
+            }
+            else if (value == "false") {
+                location.href = "@Url.Action("SelectActivity", "BackActivity")";
+            }
+        });
+    }
+    function changednAct(id) {
+        swal({
+            title: "是否確定結束活動?",
+            icon: "warning",
+            buttons: {
+                confirm: {
+                    text: "是",
+                    value: "true"
+                },
+                danger: {
+                    text: "否",
+                    value: "false"
+                }
+            }
+        }).then((value) => {
+            if (value == "true") {
+                location.href = "/BackActivity/chgdnAct?Aid=" + id;
+            }
+            else if (value == "false") {
+                location.href = "@Url.Action("SelectActivity", "BackActivity")";
+            }
+        });
+    }
+</script>
+

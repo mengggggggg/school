@@ -1,0 +1,452 @@
+﻿@model MCU_GroupTen.Models.Sort
+@{
+    ViewBag.Title = "首頁";
+    DateTime dt2 = DateTime.Now;
+    int count = 0;
+    int count2 = 0;
+}
+<style>
+    body {
+        background-color: #e5ffe5;
+        font-family: 'Open Sans', sans-serif;
+    }
+
+    .container2 {
+        display: flex;
+    }
+
+    .card2 {
+        display: flex;
+        height: 310px;
+        width: 225px;
+        background-color: #98D2EB;
+        border-radius: 10px;
+        box-shadow: -1rem 0 3rem #000;
+        /*   margin-left: -50px; */
+        transition: 0.4s ease-out;
+        position: relative;
+        left: 0px;
+    }
+
+
+        .card2:not(:first-child) {
+            margin-left: -50px;
+        }
+
+
+        .card2:hover ~ .card {
+            position: relative;
+            left: 50px;
+            transition: 0.4s ease-out;
+        }
+
+        .card2:hover .filledbar {
+            width: 120px;
+            transition: 0.4s ease-out;
+        }
+
+        .card2:hover .stroke {
+            stroke-dashoffset: 100;
+            transition: 0.6s ease-out;
+        }
+
+    .card {
+        display: flex;
+        height: 310px;
+        width: 225px;
+        background-color: rgb(202, 236, 198);
+        border-radius: 10px;
+        box-shadow: -1rem 0 3rem #000;
+        /*   margin-left: -50px; */
+        transition: 0.4s ease-out;
+        position: relative;
+        left: 0px;
+    }
+
+
+        .card:not(:first-child) {
+            margin-left: -50px;
+        }
+
+
+        .card:hover ~ .card {
+            position: relative;
+            left: 50px;
+            transition: 0.4s ease-out;
+        }
+
+        .card:hover .filledbar {
+            width: 120px;
+            transition: 0.4s ease-out;
+        }
+
+        .card:hover .stroke {
+            stroke-dashoffset: 100;
+            transition: 0.6s ease-out;
+        }
+
+    .title {
+        color: black;
+        font-weight: 300;
+        position: absolute;
+        left: 20px;
+        top: 15px;
+    }
+
+    .bar {
+        position: absolute;
+        top: 75px;
+        left: 20px;
+        height: 5px;
+        width: 180px;
+    }
+
+    .emptybar {
+        background-color: #2e3033;
+        width: 100%;
+        height: 100%;
+    }
+
+    .filledbar {
+        position: absolute;
+        top: 0px;
+        z-index: 3;
+        width: 0px;
+        height: 100%;
+        background: rgb(0,154,217);
+        background: linear-gradient(90deg, rgba(0,154,217,1) 0%, rgba(217,147,0,1) 65%, rgba(255,186,0,1) 100%);
+        transition: 0.6s ease-out;
+    }
+
+    .stroke {
+        stroke: white;
+        stroke-dasharray: 360;
+        stroke-dashoffset: 360;
+        transition: 0.6s ease-out;
+    }
+
+    .slide-arrow {
+        position: absolute;
+        top: 50%;
+        margin-top: -15px;
+    }
+
+    .prev-arrow {
+        left: -67px;
+        width: 0;
+        height: 0;
+        font-size: 50px;
+    }
+
+    .next-arrow {
+        right: -20px;
+        width: 0;
+        height: 0;
+        font-size: 50px;
+    }
+
+    div {
+        /* 字體屬性 */
+        font-family: Arial;
+        font-style: normal;
+        font-weight: 600;
+    }
+
+    body, button, input, select, textarea, h1, h2, h3, h4, h5, h6 {
+        font-family: Microsoft YaHei,'宋體', Tahoma, Helvetica, Arial, "\5b8b\4f53", sans-serif;
+    }
+</style>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12">
+            @if (Session["act"] != null)
+            {
+                if (Session["act"].ToString() == "error")
+                {
+                    <center>
+                        <img src="~/images/暫無新活動!.png" style="max-inline-size:auto;height:450px;">
+                    </center>
+                }
+                else
+                {
+                    <div id="myCarousel" class="carousel slide" data-ride="carousel">
+                        <!-- Indicators -->
+                        <ol class="carousel-indicators">
+                            @foreach (var Act in Model.Index_Act_Data)
+                            {
+                                if (count == 0)
+                                {
+                                    <li data-target="#myCarousel" data-slide-to="@count" class="active"></li>
+                                }
+                                else
+                                {
+                                    <li data-target="#myCarousel" data-slide-to="@count"></li>
+                                }
+                                count++;
+                            }
+                        </ol>
+
+                        <!-- Wrapper for slides -->
+                        <div class="carousel-inner" style="max-inline-size:auto;height:450px">
+                            @foreach (var Act in Model.Index_Act_Data)
+                            {
+                                if (count2 == 0)
+                                {
+                                    <div class="item active">
+                                        <a href="@Html.DisplayFor(modelItem => Act.Activity_URL)" class="right">
+                                            <img src="@DisplayImage(Act.Activity_Picture)" style="width: 100%;height: 100%">
+                                            @functions{
+                                                public string DisplayImage(byte[] imageData)
+                                                {
+                                                    string src = string.Empty;
+                                                    if (imageData != null)
+                                                    {
+                                                        string base64 = Convert.ToBase64String(imageData);
+                                                        src = string.Format("data:image/gif;base64,{0}", base64);
+                                                    }
+                                                    return src;
+                                                }
+                                            }
+                                        </a>
+                                        <div class="carousel-caption">
+                                        </div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="item">
+                                        <a href="@Html.DisplayFor(modelItem => Act.Activity_URL)" class="right">
+                                            <img src="@DisplayImage(Act.Activity_Picture)" style="width: 100%;height: 100%">
+                                        </a>
+                                        <div class="carousel-caption">
+                                        </div>
+                                    </div>
+                                }
+                                count2++;
+                            }
+
+                        </div>
+
+                        <!-- Left and right controls -->
+                        <a class="left carousel-control" href="#myCarousel" data-slide="prev">
+                            <span class="glyphicon glyphicon-chevron-left"></span>
+                            <span class="sr-only">Previous</span>
+                        </a>
+                        <a class="right carousel-control" href="#myCarousel" data-slide="next">
+                            <span class="glyphicon glyphicon-chevron-right"></span>
+                            <span class="sr-only">Next</span>
+                        </a>
+                    </div>
+                }
+            }
+        </div>
+
+        @if (Session["sales"] != null)
+        {
+            if (Session["sales"].ToString() == "error")
+            {
+                <div class="col-sm-12">
+                    <div class="thumbnail">
+                        <center>
+                            <p>
+                                暫無熱銷商品
+                            </p>
+                        </center>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="col-lg-12">
+                    <div class="slider multiple-items" style="height: 325px">
+                        @foreach (var Product in Model.Index_Products_Data)
+                        {
+                            <div>
+                                <div class="card">
+                                    <h3 class="title">
+                                        熱銷商品
+                                    </h3>
+                                    <div class="bar">
+                                        <div class="emptybar"></div>
+                                        <div class="filledbar"></div>
+                                        <div class="thumbnail" style="height:215px">
+                                            <a href="@Url.Action("Product", "Proshop", new { Pid = @Html.DisplayFor(modelItem => Product.Product_ID), Sid = @Html.DisplayFor(modelItem => Product.Store_ID) })" class="right">
+                                                <img src="@DisplayImage(Product.Product_Picture)" style="width:max-content;height:150px">
+                                            </a>
+                                            <a href="@Url.Action("Product", "Proshop", new { Pid = @Html.DisplayFor(modelItem => Product.Product_ID), Sid = @Html.DisplayFor(modelItem => Product.Store_ID) })" class="right">
+                                                <p style="font-size:medium" class="text-center"><strong>@Html.DisplayFor(modelItem => Product.Product_Name)</strong></p>
+                                                <p style="font-size:medium" class="text-center"><strong>@Html.DisplayFor(modelItem => Product.Store_Name)</strong></p>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+        }
+        @if (Session["date"] != null)
+        {
+            if (Session["date"].ToString() == "error")
+            {
+                <div class="col-sm-12">
+                    <div class="thumbnail">
+                        <center>
+                            <p>
+                                暫無新商品上架
+                            </p>
+                        </center>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="col-lg-12">
+                    <div class="slider multiple-items" style="height: 325px">
+                        @foreach (var Date in Model.Date_Products_Data)
+                        {
+                            <div>
+                                <div class="card">
+                                    <h3 class="title">
+                                        最新上架
+                                    </h3>
+                                    <div class="bar">
+                                        <div class="emptybar"></div>
+                                        <div class="filledbar"></div>
+                                        <div class="thumbnail" style="height:215px">
+                                            <a href="@Url.Action("Product", "Proshop", new { Pid = @Html.DisplayFor(modelItem => Date.Product_ID), Sid = @Html.DisplayFor(modelItem => Date.Store_ID) })">
+                                                <img src="@DisplayImage(Date.Product_Picture)" style="width:max-content;height:150px">
+
+                                            </a>
+                                            <a href="@Url.Action("Product", "Proshop", new { Pid = @Html.DisplayFor(modelItem => Date.Product_ID), Sid = @Html.DisplayFor(modelItem => Date.Store_ID) })">
+                                                <p style="font-size:medium" class="text-center"><strong>@Html.DisplayFor(modelItem => Date.Product_Name)</strong></p>
+                                                <p style="font-size:medium" class="text-center"><strong>@Html.DisplayFor(modelItem => Date.Store_Name)</strong></p>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+        }
+        @if (Session["Store"] != null)
+        {
+            if (Session["Store"].ToString() == "error")
+            {
+                <div class="col-sm-12">
+                    <div class="thumbnail">
+                        <center>
+                            <p>
+                                暫無商家
+                            </p>
+                        </center>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="col-lg-12">
+                    <div class="slider multiple-items" style="height: 325px">
+                        @foreach (var Store in Model.Index_Store_Data)
+                        {
+                            <div>
+                                <div class="card2">
+                                    <h3 class="title">
+                                        商家
+                                    </h3>
+                                    <div class="bar">
+                                        <div class="emptybar"></div>
+                                        <div class="filledbar"></div>
+                                        <div class="thumbnail" style="height:215px">
+                                            <a href="@Url.Action("Store", "Proshop", new { Sid = Store.Store_ID })" class="right">
+                                                <img src="@DisplayImage(Store.Store_Picture)" style="width:max-content;height:150px">
+
+                                            </a>
+                                            <a href="@Url.Action("Store", "Proshop", new { Sid = Store.Store_ID })">
+                                                <p style="font-size:medium" class="text-center"><strong>@Html.DisplayFor(modelItem => Store.Store_Name)</strong></p>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</div>
+<!-- row 內容物 中間8-->
+<!--高評分商家-->
+<!-- sidenav 右側2 -->
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.css">
+<script src="https://kit.fontawesome.com/31992091e6.js" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.js"></script>
+<script type="text/javascript">
+    $('.multiple-items').slick({
+        infinite: true,
+        slidesToShow: 4,
+        slidesToScroll: 4,
+        prevArrow: '<div class="slide-arrow prev-arrow"><span><i class="fa-solid fa-circle-chevron-left"></i></span></div>',
+        nextArrow: '<div class="slide-arrow next-arrow"><span><i class="fa-solid fa-circle-chevron-right"></i></span></div>'
+    });
+    $(function () {
+        if ('@ViewData["Message"]' != '') {
+            swal("錯誤!", '@ViewData["Message"]', "error");
+        }
+        if ('@ViewData["logout"]' != '') {
+            swal("成功!", '@ViewData["logout"]', "success");
+        }
+        if ('@ViewData["error_acc"]' != '') {
+            swal("錯誤!", '@ViewData["error_acc"]', "error");
+        }
+        if ('@ViewData["PSerror"]' != '') {
+            swal("錯誤!", '@ViewData["PSerror"]', "warning");
+        }
+
+        if ('@ViewData["msg"]' != '') {
+            if ('@ViewData["msg"]' == "登入成功") {
+                swal("登入成功!", '@ViewData["msg"]', "success");
+            }
+            else {
+                swal({
+                title: '@ViewData["msg"]',
+                icon: "warning",
+                buttons: {
+                    confirm: {
+                        text: "馬上登入!",
+                        value: "false"
+                    },
+                    danger: {
+                        text: "是",
+                        value: "true"
+                    }
+                }
+            }).then((value) => {
+                if (value == "true") {
+                }
+                else if (value == "false") {
+                    location.href = "@Url.Action("Login", "Member")";
+                }
+        });
+            }
+        }
+        if ('@ViewData["msg"]' == "訂單已建立") {
+                swal("成功!", '@ViewData["msg"]', "success");
+            }
+        if ('@ViewData["error_MI"]' != '') {
+            swal("錯誤!", '@ViewData["error_MI"]', "error");
+        }
+        if ('@ViewData["chkerror"]' != '') {
+            swal("不好意思!", '@ViewData["chkerror"]', "warning");
+        }
+    });
+</script>

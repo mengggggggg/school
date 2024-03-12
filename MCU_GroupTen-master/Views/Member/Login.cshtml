@@ -1,0 +1,81 @@
+﻿@model MCU_GroupTen.Models.MemberModel
+@{
+    ViewBag.Title = "登入";
+}
+<style>
+    body {
+        background-color: #e5ffe5;
+        font-family: 'Open Sans', sans-serif;
+    }
+
+    div {
+        /* 字體屬性 */
+        font-family: Arial;
+        font-style: normal;
+        font-weight: 600;
+    }
+
+    body, button, input, select, textarea, h1, h2, h3, h4, h5, h6 {
+        font-family: Microsoft YaHei,'宋體', Tahoma, Helvetica, Arial, "\5b8b\4f53", sans-serif;
+    }
+</style>
+<body onkeydown="_key()">
+    @using (Html.BeginForm(ViewContext.RouteData.GetRequiredString("Action"), ViewContext.RouteData.GetRequiredString("Controller"), new { }, FormMethod.Post, new { @class = "form-horizontal row-border validate", @id = "LG_Form" }))
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="container">
+            <h2>會員登入</h2>
+            <br />
+
+            <div class="form-group" style="margin-left:3px;">
+                <label for="acnt">帳號:</label>
+                @Html.EditorFor(model => model.Member_Account, new { htmlAttributes = new { @class = "form-control", @placeholder = "帳號" } })
+                @Html.ValidationMessageFor(model => model.Member_Account, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group" style="margin-left:3px;">
+                <label for="pwd">密碼:</label>
+                @Html.EditorFor(model => model.Member_Password, new { htmlAttributes = new { @class = "form-control", @type = "password", @placeholder = "密碼" } })
+                @Html.ValidationMessageFor(model => model.Member_Password, "", new { @class = "text-danger" })
+            </div>
+            <br />
+            <button type="button" value="Create" class="btn btn-primary" onclick="Login();">登入</button>
+            <a href="@Url.Action("Register", "Member")" class="btn btn-default">加入會員</a>
+            <br />
+        </div>
+    }
+</body>
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script type="text/javascript">
+
+    $(function () {
+        if ('@ViewData["Message"]' != '') {
+            swal("錯誤!", '@ViewData["Message"]', "error");
+            }
+    });
+    function _key() {
+        if (event.keyCode == 13)
+            Login();
+    } 
+    function Login() {
+        debugger;
+        if ($('#Member_Account').val() == "") {
+            swal("錯誤!", "請輸入帳號！", "error");
+            return false;
+        }
+        else if ($('#Member_Password').val() == "") {
+            swal("錯誤!", "請輸入密碼！", "error");
+            return false;
+        }
+        else
+        {
+            $('#LG_Form').submit();
+        }
+    }
+</script>
+

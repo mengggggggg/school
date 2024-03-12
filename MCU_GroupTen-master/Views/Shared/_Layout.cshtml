@@ -1,0 +1,273 @@
+﻿<style>
+    .navbar-brand {
+        padding: 29px 15px;
+        height: auto;
+    }
+
+    nav.navbar.bootsnav {
+        border: none;
+        margin-bottom: 150px;
+    }
+
+    .navbar-nav {
+        float: left;
+    }
+
+    nav.navbar.bootsnav {
+        scroll-padding-bottom: 25px;
+    }
+
+        nav.navbar.bootsnav ul.nav > li > a {
+            color: #474747;
+            text-transform: uppercase;
+            padding-right: 25px;
+        }
+
+        nav.navbar.bootsnav ul.nav > li:hover {
+            background: #f4f4f4;
+        }
+
+    .nav > li:after {
+        content: "";
+        width: 0;
+        height: 5px;
+        background: #34c9dd;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        transition: all 0.5s ease 0s;
+    }
+
+    .nav > li:hover:after {
+        width: 100%;
+    }
+
+    nav.navbar.bootsnav ul.nav > li.dropdown > a.dropdown-toggle:after {
+        content: "+";
+        font-family: 'FontAwesome';
+        font-size: 16px;
+        font-weight: 500;
+        position: absolute;
+        top: 35%;
+        right: 10%;
+        transition: all 0.4s ease 0s;
+    }
+
+    nav.navbar.bootsnav ul.nav > li.dropdown.on > a.dropdown-toggle:after {
+        content: "\f105";
+        transform: rotate(90deg);
+    }
+
+    .dropdown-menu.multi-dropdown {
+        position: absolute;
+        left: -100% !important;
+    }
+
+    nav.navbar.bootsnav li.dropdown ul.dropdown-menu {
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        border: none;
+    }
+
+    .dropdown:hover .dropdown-menu {
+        display: block;
+    }
+
+    div {
+        /* 字體屬性 */
+        font-family: Arial;
+        font-style: normal;
+        font-weight: 600;
+    }
+
+    body, button, input, select, textarea, h1, h2, h3, h4, h5, h6 {
+        font-family: Microsoft YaHei,'宋體', Tahoma, Helvetica, Arial, "\5b8b\4f53", sans-serif;
+    }
+</style>
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+    <script src="https://kit.fontawesome.com/31992091e6.js" crossorigin="anonymous"></script>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+
+
+</head>
+
+
+<body>
+    <script src="js/jquery-1.11.3.min.js"></script>
+    <!-- LOGO行 Nav-->
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-light navbar-default bootsnav container-fluid navbar-fix flixed navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <a class="navbar-brand text-success " href="@Url.Action("Index", "Home")">LOGO</a>
+            </div>
+            <form method="post" class="navbar-form navbar-left" action="@Url.Action("Search", "Home")">
+                <div class="form-group">
+                    <input type="text" class="form-control" placeholder="請輸入關鍵字" name="keyword">
+                    <input type="submit" value="搜尋" class="btn btn-danger">
+                </div>
+
+
+            </form>
+            <div>
+                <ul class="nav navbar-nav ml-auto" data-in="fadeInDown" data-out="fadeOutUp">
+                    <li class="dropdown">
+                        <a href="#">關於我們</a>
+                        <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
+                            <li><a href="@Url.Action("About", "Home")">五峰鄉簡介</a></li>
+                            <li><a href="@Url.Action("Notice", "Home")">注意事項</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#">商品列表</a>
+                        <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
+                            <li><a href="@Url.Action("Searchtype", "Home", new {Ptype="水果"})">水果類</a></li>
+                            <li><a href="@Url.Action("Searchtype", "Home", new {Ptype="蔬菜"})">蔬菜類</a></li>
+                            <li><a href="@Url.Action("Searchtype", "Home", new {Ptype="肉類"})">肉類</a></li>
+                            <li><a href="@Url.Action("Searchtype", "Home", new {Ptype="其他"})">其他</a></li>
+                        </ul>
+                    </li>
+
+                    @if (Session["Member_identity"] != null)
+                    {
+                        if (Session["Member_identity"].ToString() == "平台管理員" || Session["Member_identity"].ToString() == "開發者")
+                        {
+                            <li class="dropdown">
+                                <a href="#">後台控制</a>
+                                <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
+                                    <li><a href="@Url.Action("SelectStore", "BackStore")">商家後台</a></li>
+                                    <li><a href="@Url.Action("SelectProduct", "BackProduct")">商品後台</a></li>
+                                    <li><a href="@Url.Action("SelectMember", "BackMember")">會員後台</a></li>
+                                    <li><a href="@Url.Action("SelectOrder", "BackOrder")">訂單後台</a></li>
+                                    <li><a href="@Url.Action("SelectActivity", "BackActivity")">活動後台</a></li>
+                                </ul>
+                            </li>
+                        }
+                        else if (Session["Member_identity"].ToString() == "商家")
+                        {
+                            <li><a href="@Url.Action("SelectforStore", "BackStoreFS")">管理商家</a></li>
+                        }
+                        else if (Session["Member_identity"].ToString() == "會員")
+                        {
+                            <li class="dropdown">
+                                <a href="@Url.Action("Member_Center", "Member")">我的帳戶</a>
+                                <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
+                                    <li><a href="@Url.Action("Member_Center", "Member")">會員中心</a></li>
+                                    <li><a href="@Url.Action("Member_Order", "Member")">訂單查詢</a></li>
+                                    <li><a href="@Url.Action("Member_Change", "Member")">修改密碼</a></li>
+                                </ul>
+                            </li>
+                        }
+                    }
+                    else
+                    {
+
+                    }
+
+                </ul>
+            </div>
+
+            <ul class="nav navbar-nav navbar-right text-warning">
+                @if (Session["Member_Account"] != null)
+                {
+                    <li><a href="@Url.Action("Member_Center", "Member")">你好 @Session["Member_Name"]</a></li>
+                    <li><a href="@Url.Action("Logout", "Member")">登出</a></li>
+                }
+                else
+                {
+                    <li><a href="@Url.Action("Login", "Member")">會員登入</a></li>
+                    <li><a href="@Url.Action("Register", "Member")">加入會員</a></li>
+                }
+                @if (Session["Member_identity"] != null)
+                {
+                    if (Session["Member_identity"].ToString() == "會員")
+                    {
+                        <li><a href="@Url.Action("Cart", "Cart")"><i class="fa-solid fa-cart-shopping" style="height:20px"></i></a></li>
+                    }
+                }
+                else
+                {
+
+                }
+
+            </ul>
+
+        </div>
+    </nav>
+
+    @RenderBody()
+    <hr />
+
+
+    <!--聯絡資訊-->
+    <footer class="bottom">
+        <div id="contact" class="container">
+            <h3 class="text-center">聯絡我們</h3>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <p><span class="glyphicon glyphicon-map-marker"></span>新竹縣五峰鄉</p>
+                    <p><span class="glyphicon glyphicon-phone"></span>聯絡電話：0912345678</p>
+                    <p><span class="glyphicon glyphicon-envelope"></span>電子郵件: mail@mail.com</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+
+</html>
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script type="text/javascript">
+    $(function () {
+        debugger;
+        var identity = '@Session["Member_identity"]';
+        if (identity != "會員") {
+            $('.action_btn').addClass("disabled");
+            $('.action_btn').attr("disabled", "disabled");
+        }
+        else {
+            $('.action_btn').addClass("disable", false);
+            $('.action_btn').attr("disable", false);
+        }
+
+        if ('@Session["Member_identity"]' != null) {
+            var msg = "";
+        var Model = {
+            identity: '@Session["Member_identity"]',
+        };
+        $.ajax({
+            url: '@Url.Action("check_identity", "Home")',
+            data: Model,
+            type: 'POST',
+            cache: false,
+            async: false,
+            success: function (data) {
+                if (data != '') {
+                    if (data == "Y") {
+                        return true;
+                    }
+                    else {
+                        location.href = "@Url.Action("Index", "Home")";
+                        return false;
+                    }
+                }
+            }
+        });
+        }
+    });
+</script>

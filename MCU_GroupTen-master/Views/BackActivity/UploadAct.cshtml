@@ -1,0 +1,73 @@
+﻿@model MCU_GroupTen.Models.Act
+@{
+    ViewBag.Title = "新增活動";
+}
+<body>
+    @using (Html.BeginForm(ViewContext.RouteData.GetRequiredString("Action"), ViewContext.RouteData.GetRequiredString("Controller"), new { }, FormMethod.Post, new { @class = "form-horizontal row-border validate", @id = "UA_Form", @enctype = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken()
+    <div class="container">
+        <h2>新增活動</h2>
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            <label for="acnt">活動資訊:</label>
+            @Html.EditorFor(model => model.Activity_Information, new { htmlAttributes = new { @class = "form-control", @placeholder = "活動內容" } })
+            @Html.ValidationMessageFor(model => model.Activity_Information, "", new { @class = "text-danger" })
+        </div>
+        <div class="form-group">
+            <label for="">活動網址:</label>
+            @Html.EditorFor(model => model.Activity_URL, new { htmlAttributes = new { @class = "form-control", @type = "text", @placeholder = "活動網址" } })
+            @Html.ValidationMessageFor(model => model.Activity_URL, "", new { @class = "text-danger" })
+        </div>
+        <div class="form-group">
+            <label for="">開始宣導日期:</label>
+            @Html.EditorFor(model => model.Activity_StartDate, new { htmlAttributes = new { @class = "form-control", @type = "date", @placeholder = "活動網址" } })
+            @Html.ValidationMessageFor(model => model.Activity_StartDate, "", new { @class = "text-danger" })
+        </div>
+        <div class="form-group">
+            <input type="file" accept=".png, .jpg, .jpeg" name="File" id="File" />
+        </div>
+        <div class="form-group">
+            <button type="button" value="Create" class="btn btn-default" onclick="Send();">加入</button>
+            <a type="button" class="btn btn-default" style="" href="@Url.Action("SelectActivity", "BackActivity")">返回</a>
+
+            <br />
+        </div>
+    </div>
+    }
+
+    @section Scripts {
+        @Scripts.Render("~/bundles/jqueryval")
+    }
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            if ('@ViewData["uamsg"]' != '') {
+            swal("成功!", '@ViewData["uamsg"]', "success");
+        }
+    });
+    function Send() {
+        debugger;
+        if ($('#Activity_Information').val() == "") {
+            swal("錯誤!", "請輸入活動資訊！", "error");
+            return false;
+        }
+        else if ($('#Activity_URL').val() == "") {
+            swal("錯誤!", "請輸入活動網址！", "error");
+            return false;
+        }
+        else if ($('#Activity_StartDate').val() == "") {
+            swal("錯誤!", "請輸入活動開始日期！", "error");
+            return false;
+        }
+        else if ($('#File').val() == "") {
+            swal("錯誤!", "請匯入活動圖片！", "error");
+            return false;
+        }
+        else {
+            $('#UA_Form').submit();
+        }
+    }
+    </script>
+</body>
+

@@ -1,0 +1,148 @@
+﻿@model MCU_GroupTen.Models.Proshop
+@{
+    ViewBag.Title = "商品";
+    var all = Model.Product_Stock;
+    int i = 0;
+}
+<head>
+    <style>
+        body {
+            background-color: #e5ffe5;
+            font-family: 'Open Sans', sans-serif;
+        }
+
+        .carousel-inner img {
+            width: 100%;
+            min-height: 200px;
+        }
+
+        div {
+            /* 字體屬性 */
+            font-family: Arial;
+            font-style: normal;
+            font-weight: 600;
+        }
+
+        body, button, input, select, textarea, h1, h2, h3, h4, h5, h6 {
+            font-family: Microsoft YaHei,'宋體', Tahoma, Helvetica, Arial, "\5b8b\4f53", sans-serif;
+        }
+    </style>
+</head>
+<div class="container-fluid">
+    <div class="row content">
+        <div class="col-sm-2 sidenav hidden-xs">
+            <br />
+            <h2>商品分類</h2>
+            <ul class="nav nav-pills nav-stacked">
+                <li><a href="@Url.Action("Searchtype", "Home", new {Ptype="水果"})">水果類</a></li>
+                <li><a href="@Url.Action("Searchtype", "Home", new {Ptype="蔬菜"})">蔬菜類</a></li>
+                <li><a href="@Url.Action("Searchtype", "Home", new {Ptype="肉類"})">肉類</a></li>
+                <li><a href="@Url.Action("Searchtype", "Home", new {Ptype="其他"})">其他</a></li>
+            </ul><br>
+        </div>
+        <br>
+
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="carousel-inner" role="listbox" style="max-inline-size:auto;height:500px">
+                        <div class="well">
+                            <img src="@DisplayImage(Model.Product_Picture)" width="400" height="450">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-4">
+                    <div class="well" style="font-size:24px">
+                        <h2>商品名稱：</h2>
+                        <p>@Html.DisplayFor(model => model.Product_Name)</p>
+                    </div>
+
+                    <div class="well" style="font-size:24px">
+                        <h2>商品庫存：</h2>
+                        <p>@Html.DisplayFor(model => model.Product_Stock)</p>
+                        <h2>商品價格：</h2>
+                        <p>
+                            @Html.DisplayFor(model => model.Product_Price)元 / @Html.DisplayFor(model => model.Product_Spec)
+                        </p>
+                    </div>
+                    <form method="post" action="@Url.Action("Addcart", "Proshop",new { Pn = Model.Product_Name, Sn = Model.Store_Name ,Pid =Model.Product_ID,Sid=Model.Store_ID,Ps=Model.Product_Spec,Pp=Model.Product_Price})">
+                        <div class="well" style="font-size:20px">
+                            <p>數量:</p>
+                            <select name="Pc" attributes="required">
+                                <option value="" disabled>數量</option>
+                                <option value="1" selected>1</option>
+                                @for (i = 1; i <= all; i++)
+                                {
+                                    if (i == 1)
+                                    {
+                                        continue;
+                                    }
+                                    else
+                                    {
+                                        <option value="@i">@i</option>
+                                    }
+                                }
+                            </select>
+                            <br />
+                            <br />
+                            <button type="submit" value="" class="btn btn-warning action_btn">加入購物車</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <hr>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12 well">
+                <div class="col-sm-12">
+                    <h3>商家介紹:@Html.DisplayFor(model => model.Store_Introduce)</h3>
+                    <div style="float:left">
+
+                        <a href="@Url.Action("Store", "Proshop",new {Sid=Model.Store_ID })" class="right">
+                            <img src="@DisplayImage(Model.Store_Picture)" width="100" height="100">
+                            @functions{
+                                public string DisplayImage(byte[] imageData)
+                                {
+                                    string src = string.Empty;
+                                    if (imageData != null)
+                                    {
+                                        string base64 = Convert.ToBase64String(imageData);
+                                        src = string.Format("data:image/gif;base64,{0}", base64);
+                                    }
+                                    return src;
+                                }
+                            }
+                        </a>
+                        <h3>
+                            @Html.DisplayFor(model => model.Store_Name)
+                        </h3>
+                    </div>
+                </div>
+
+
+
+            </div>
+            <div class="col-sm-12 well">
+                <div class="col-sm-12">
+                    <h3>商品介紹：@Html.DisplayFor(model => model.Product_Introduce)</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script type="text/javascript">
+    $(function () {
+        if ('@ViewData["psmsg"]' == '加入購物車成功') {
+            swal("成功!", '@ViewData["psmsg"]', "success");
+        }
+        else if ('@ViewData["psmsg"]' == '此商品庫存不足') {
+            swal("錯誤!", '@ViewData["psmsg"]', "error");
+        }
+    });
+</script>

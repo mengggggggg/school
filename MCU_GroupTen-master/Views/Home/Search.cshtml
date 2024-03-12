@@ -1,0 +1,200 @@
+﻿@model List<MCU_GroupTen.Models.Proshop>
+@{
+    ViewBag.Title = "Search";
+}
+<head>
+    <style>
+        body {
+            background-color: #e5ffe5;
+            font-family: 'Open Sans', sans-serif;
+        }
+
+        .container2 {
+            display: flex;
+        }
+
+        .card2 {
+            display: flex;
+            height: 310px;
+            width: 225px;
+            background-color: #98D2EB;
+            border-radius: 10px;
+            box-shadow: -1rem 0 3rem #000;
+            /*   margin-left: -50px; */
+            transition: 0.4s ease-out;
+            position: relative;
+            left: 0px;
+        }
+
+
+            .card2:not(:first-child) {
+                margin-left: -50px;
+            }
+
+
+            .card2:hover ~ .card {
+                position: relative;
+                left: 50px;
+                transition: 0.4s ease-out;
+            }
+
+            .card2:hover .filledbar {
+                width: 120px;
+                transition: 0.4s ease-out;
+            }
+
+            .card2:hover .stroke {
+                stroke-dashoffset: 100;
+                transition: 0.6s ease-out;
+            }
+
+        .card {
+            display: flex;
+            height: 310px;
+            width: 225px;
+            background-color: rgb(202, 236, 198);
+            border-radius: 10px;
+            box-shadow: -1rem 0 3rem #000;
+            /*   margin-left: -50px; */
+            transition: 0.4s ease-out;
+            position: relative;
+            left: 0px;
+            margin-top: 25px;
+            margin-bottom: 15px;
+        }
+
+
+            .card:not(:first-child) {
+                margin-left: -50px;
+            }
+
+
+            .card:hover ~ .card {
+                position: relative;
+                left: 50px;
+                transition: 0.4s ease-out;
+            }
+
+            .card:hover .filledbar {
+                width: 120px;
+                transition: 0.4s ease-out;
+            }
+
+            .card:hover .stroke {
+                stroke-dashoffset: 100;
+                transition: 0.6s ease-out;
+            }
+
+        .title {
+            color: black;
+            font-weight: 300;
+            position: absolute;
+            left: 20px;
+            top: 15px;
+        }
+
+        .bar {
+            position: absolute;
+            top: 75px;
+            left: 20px;
+            height: 5px;
+            width: 180px;
+        }
+
+        .emptybar {
+            background-color: #2e3033;
+            width: 100%;
+            height: 100%;
+        }
+
+        .filledbar {
+            position: absolute;
+            top: 0px;
+            z-index: 3;
+            width: 0px;
+            height: 100%;
+            background: rgb(0,154,217);
+            background: linear-gradient(90deg, rgba(0,154,217,1) 0%, rgba(217,147,0,1) 65%, rgba(255,186,0,1) 100%);
+            transition: 0.6s ease-out;
+        }
+
+        .stroke {
+            stroke: white;
+            stroke-dasharray: 360;
+            stroke-dashoffset: 360;
+            transition: 0.6s ease-out;
+        }
+
+        .slide-arrow {
+            position: absolute;
+            top: 50%;
+            margin-top: -15px;
+        }
+
+        .prev-arrow {
+            left: -67px;
+            width: 0;
+            height: 0;
+            font-size: 50px;
+        }
+
+        .next-arrow {
+            right: -20px;
+            width: 0;
+            height: 0;
+            font-size: 50px;
+        }
+
+        div {
+            /* 字體屬性 */
+            font-family: Arial;
+            font-style: normal;
+            font-weight: 600;
+        }
+
+        body, button, input, select, textarea, h1, h2, h3, h4, h5, h6 {
+            font-family: Microsoft YaHei,'宋體', Tahoma, Helvetica, Arial, "\5b8b\4f53", sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="col-sm-12 text-left" style="border:4px double">
+            <h2>搜尋結果：@Session["keyword"]</h2>
+            @foreach (var Product in Model)
+            {
+                <div class="col-xs-8 col-sm-6 col-md-3">
+                    <div class="card">
+                        <h4 class="title text-center">@Html.DisplayFor(modelItem => Product.Product_Name)</h4>
+                        <div class="bar">
+                            <div class="emptybar"></div>
+                            <div class="filledbar"></div>
+                            <div class="thumbnail" style="max-inline-size: auto; height: 215px">
+                                <a href="@Url.Action("Product", "Proshop", new { Pid=@Html.DisplayFor(modelItem => Product.Product_ID),Sid=@Html.DisplayFor(modelItem => Product.Store_ID) })" class="right">
+                                    <img src="@DisplayImage(Product.Product_Picture)" style="width:max-content;height:150px">
+                                    @functions{
+                                        public string DisplayImage(byte[] imageData)
+                                        {
+                                            string src = string.Empty;
+                                            if (imageData != null)
+                                            {
+                                                string base64 = Convert.ToBase64String(imageData);
+                                                src = string.Format("data:image/gif;base64,{0}", base64);
+                                            }
+                                            return src;
+                                        }
+                                    }
+                                </a>
+                                <a href="@Url.Action("Product", "Proshop", new { Pid=@Html.DisplayFor(modelItem => Product.Product_ID),Sid=@Html.DisplayFor(modelItem => Product.Store_ID) }) })" class="right">
+                                    <p style="font-size:medium" class="text-center"><strong>每 @Html.DisplayFor(modelItem => Product.Product_Spec)@Html.DisplayFor(modelItem => Product.Product_Price)元</strong></p>
+                                    <p style="font-size:medium" class="text-center"><strong>@Html.DisplayFor(modelItem => Product.Store_Name)</strong></p>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            }
+        </div>
+    </div>
+</body>

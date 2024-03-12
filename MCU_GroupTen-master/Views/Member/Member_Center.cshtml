@@ -1,0 +1,108 @@
+﻿@model MCU_GroupTen.Models.MemberModel
+@{
+    ViewBag.Title = "會員中心";
+}
+<style>
+    body {
+        background-color: #e5ffe5;
+        font-family: 'Open Sans', sans-serif;
+    }
+
+    div {
+        /* 字體屬性 */
+        font-family: Arial;
+        font-style: normal;
+        font-weight: 600;
+    }
+
+    body, button, input, select, textarea, h1, h2, h3, h4, h5, h6 {
+        font-family: Microsoft YaHei,'宋體', Tahoma, Helvetica, Arial, "\5b8b\4f53", sans-serif;
+    }
+</style>
+<body>
+    <div class="container-fluid">
+        <div class="row content">
+            <div class="col-sm-2 sidenav hidden-xs">
+                <h2>會員專區</h2>
+                <ul class="nav nav-pills nav-stacked">
+                    <li><a href="@Url.Action("Member_Center", "Member")">會員中心</a></li>
+                    <li>
+                        <a href="@Url.Action("Member_Order", "Member")">
+                            (已完成/正在進行中) <br />
+                            訂單查詢
+                        </a>
+                    </li>
+                    <li><a href="@Url.Action("Member_Questions", "Member")">常見問題</a></li>
+                    <li><a href="@Url.Action("Member_Change", "Member")">修改密碼</a></li>
+                    <li><a href="@Url.Action("Logout", "Member")">登出</a></li>
+                </ul><br>
+            </div>
+            <div class="col-sm-8">
+                <br />
+                <h2>我的資訊 <a href="@Url.Action("Member_Center_Change", "Member")" class="btn btn-danger">編輯</a></h2>
+                <form action="/action_page.php">
+                </form>
+                <form class="form-inline" action="/action_page.php">
+                    <div class="form-group">
+                        <br />
+                        <label for="name">姓名:</label>
+                        <label for="name">@Html.DisplayFor(model => model.Member_Name)</label>
+                    </div>
+                    <br />
+                    <div class="form-group">
+                        <br />
+                        <label for="acnt">帳號:</label>
+                        <label for="acnt">@Html.DisplayFor(model => model.Member_Account)</label>
+                    </div>
+                    <br />
+                    <div class="form-group">
+                        <br />
+                        <label for="email">電子信箱(Email):</label>
+                        <label for="email" class="input-group">@Html.DisplayFor(model => model.Member_Mail)</label>
+                    </div>
+                    <br />
+                    <div class="form-group">
+                        <br />
+                        <label for="add">地址:</label>
+                        <label for="add">@Html.DisplayFor(model => model.Member_Address)</label>
+                    </div>
+                    <br />
+                    <div class="form-group">
+                        <br />
+                        <label for="birth">生日:</label>
+                        <label for="birth">@Html.DisplayFor(model => model.Member_Birth)</label>
+                    </div>
+                    <br />
+                    <div class="form-group">
+                        <br />
+                        <label for="optradio">性別:</label>
+                        @if (Html.DisplayFor(model => model.Member_Sex).ToString() == "M")
+                        {
+                            <label>男性</label>
+                        }
+                        else if (Html.DisplayFor(model => model.Member_Sex).ToString() == "F")
+                        {
+                            <label>女性</label>
+                        }
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script type="text/javascript">
+$(function () {
+        if ('@ViewData["msg"]' != '') {
+        swal("成功!", '@ViewData["msg"]', "success");
+    }
+    if ('@ViewData["ctmsg"]' == '沒有任何訂單紀錄') {
+        swal("錯誤!", '@ViewData["ctmsg"]', "warning");
+    }
+});
+</script>
+
+

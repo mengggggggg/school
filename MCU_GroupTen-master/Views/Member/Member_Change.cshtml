@@ -1,0 +1,212 @@
+﻿@model MCU_GroupTen.Models.MemberModel
+@{
+    ViewBag.Title = "更改密碼";
+}
+<body onkeydown="_key()">
+    <style>
+        body {
+            background-color: #e5ffe5;
+            font-family: 'Open Sans', sans-serif;
+        }
+
+        div {
+            /* 字體屬性 */
+            font-family: Arial;
+            font-style: normal;
+            font-weight: 600;
+        }
+
+        body, button, input, select, textarea, h1, h2, h3, h4, h5, h6 {
+            font-family: Microsoft YaHei,'宋體', Tahoma, Helvetica, Arial, "\5b8b\4f53", sans-serif;
+        }
+    </style>
+
+    <div class="container-fluid">
+        <div class="row content">
+            <div class="col-sm-2 sidenav hidden-xs">
+                <h2>會員專區</h2>
+                <ul class="nav nav-pills nav-stacked">
+                    <li><a href="@Url.Action("Member_Center", "Member")">會員中心</a></li>
+                    <li>
+                        <a href="@Url.Action("Member_Order", "Member")">
+                            (已完成/正在進行中) <br />
+                            訂單查詢
+                        </a>
+                    </li>
+                    <li><a href="@Url.Action("Member_Questions", "Member")">常見問題</a></li>
+                    <li><a href="@Url.Action("Member_Change", "Member")">修改密碼</a></li>
+                    <li><a href="@Url.Action("Logout", "Member")">登出</a></li>
+                </ul><br>
+            </div>
+            <div class="col-sm-8">
+                @using (Html.BeginForm(ViewContext.RouteData.GetRequiredString("Action"), ViewContext.RouteData.GetRequiredString("Controller"), new { }, FormMethod.Post, new { @class = "form-horizontal row-border validate", @id = "CGPD_Form" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <div class="container">
+                        <h2>變更密碼</h2>
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        <div class="form-group" style="margin-left:3px;">
+                            <label for="">原密碼:</label>
+                            <input type="password" class="form-control" placeholder="原密碼" id="User_passwd">
+                            <button class="btn btn-danger" type="button" onclick="check_original();">驗證</button>
+                        </div>
+                        <hr />
+                        <div class="form-group" style="margin-left:3px;">
+                            <label for="">新密碼:</label>
+                            @Html.EditorFor(model => model.Member_Password, new { htmlAttributes = new { @class = "form-control", @type = "password", @onchange = "check_change();", @placeholder = "新密碼" } })
+                            @Html.ValidationMessageFor(model => model.Member_Password, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="form-group" style="margin-left:3px;">
+                            <label for="">確認新密碼:</label>
+                            <input type="password" class="form-control" onchange="check_change();" placeholder="確認新密碼" id="Check_user_passwd">
+                            <button class="btn btn-danger" type="button" onclick="check_original_fs();">驗證</button>
+                        </div>
+                        <br />
+                        <div class="form-group" style="margin-left:3px;">
+                            <button type="button" value="Create" class="btn btn-danger" onclick="Send();">更新</button>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</body>
+
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script type="text/javascript">
+    $(function () {
+        if ('@ViewData["RGmsg"]' != '') {
+            swal("錯誤!", '@ViewData["RGmsg"]', "error");
+        }
+    });
+    function _key() {
+        if (event.keyCode == 13)
+            Send();
+    }
+    function check_original_fs() {
+        debugger;
+        if ($("#Member_Password").val() != $("#Check_user_passwd").val()) {
+            $("#Check_user_passwd").val('');
+            $("#Check_user_passwd").focus();
+            swal("錯誤!", "新密碼確認有誤，請重新輸入!", "error");
+            return false;
+        }
+        else if ($("#Member_Password").val() == "") {
+            swal("錯誤!", "請輸入新密碼!", "error");
+            return false;
+        }
+        else if ($("#Check_user_passwd").val() == "") {
+            swal("錯誤!", "請輸入確認新密碼!", "error");
+            return false;
+        }
+        var Model = {
+            member_password: $("#Member_Password").val(),
+        };
+        $.ajax({
+            url: '@Url.Action("Check_Original_FS", "Member")',
+            data: Model,
+            type: 'POST',
+            cache: false,
+            async: false,
+            success: function (data) {
+                if (data != '') {
+                    if (data == "Y") {
+                        swal("成功!", "新密碼驗證成功!", "success");
+                        return true;
+                    }
+                    else {
+                        $("#Member_Password").val('');
+                        $("#Member_Password").focus();
+                        $("#Check_user_passwd").val('');
+                        $("#Check_user_passwd").focus();
+                        swal("錯誤!", "原始密碼與新密碼相同，請再次確認!", "error");
+                        return false;
+                    }
+                }
+            }
+        });
+    }
+    function check_original() {
+        debugger;
+        if ($("#User_passwd").val() == '') {
+            swal("錯誤!", "請輸入原始密碼!", "error");
+            $("#User_passwd").focus();
+            return false;
+        }
+        var Model = {
+            user_passwd: $("#User_passwd").val(),
+        };
+        $.ajax({
+            url: '@Url.Action("Check_Original_PW", "Member")',
+            data: Model,
+            type: 'POST',
+            cache: false,
+            async: false,
+            success: function (data) {
+                if (data != '') {
+                    if (data == "Y") {
+                        swal("成功!", "原始密碼正確!", "success");
+                        return true;
+                    }
+                    else {
+                        $("#User_passwd").val('');
+                        $("#User_passwd").focus();
+                        swal("錯誤!", "原始密碼確認有誤，請重新輸入!", "error");
+                        return false;
+                    }
+                }
+            }
+        });
+    }
+    function check_change() {
+        debugger;
+        var newpwd = $("#Member_Password").val();
+        var regex = new RegExp(/^(?=.{8,}$)(?=.*\d)(?=.*[a-zA-Z])/, "g");
+        if (newpwd.match(regex) == null) {
+            $("#Member_Password").val('');
+            $("#Member_Password").focus();
+            swal("錯誤!", "密碼複雜度不符合，請至少8碼，並同時含有英數字!", "error");
+            return false;
+        }
+    }
+    function check_check() {
+        debugger;
+        if ($("#Member_Password").val() != $("#Check_user_passwd").val()) {
+            $("#Check_user_passwd").val('');
+            $("#Check_user_passwd").focus();
+            swal("錯誤!", "密碼確認有誤，請重新輸入!", "error");
+            return false;
+        }
+        else if ($("#Member_Password").val() == "") {
+            swal("錯誤!", "請輸入密碼!", "error");
+            return false;
+        }
+        else if ($("#Check_user_passwd").val() == "") {
+            swal("錯誤!", "請輸入確認密碼!", "error");
+            return false;
+        }
+        else if ($("#Member_Password").val() == $("#Check_user_passwd").val()) {
+            swal("成功!", "驗證成功!", "success");
+        }
+    }
+    function Send() {
+        debugger;
+        check_original();
+        check_original_fs();
+        if ($('#User_passwd').val() == "") {
+            swal("錯誤!", "請輸入原始密碼進行確認!", "error");
+            return false;
+        }
+        else if ($('#Member_Password').val() == "") {
+            swal("錯誤!", "請確認新密碼！", "error");
+            return false;
+        }
+        else if ($('#Check_user_passwd').val() == "") {
+            swal("錯誤!", "請確認新密碼！","error");
+            return false;
+        }
+        else {
+            $('#CGPD_Form').submit();
+        }
+    }
+</script>

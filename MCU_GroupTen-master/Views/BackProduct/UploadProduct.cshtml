@@ -1,0 +1,139 @@
+﻿@model MCU_GroupTen.Models.Proshop
+@{
+    ViewBag.Title = "加入商品";
+}
+<body>
+    @using (Html.BeginForm(ViewContext.RouteData.GetRequiredString("Action"), ViewContext.RouteData.GetRequiredString("Controller"), new { }, FormMethod.Post, new { @class = "form-horizontal row-border validate", @id = "UP_Form", @enctype = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken()
+        <div class="container">
+            <h2>加入商品</h2>
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="form-group">
+                <div>
+                    <label for="">請選擇商家:</label>
+                    <br />
+                    <select name="SelectStore" style="width: 250px; height: 40px;">
+                        <option value="" disabled>請選擇商家</option>
+                        @for (int i = 1; i < 10000000; i++)
+                        {
+                            if (Session["" + i] == null)
+                            {
+                                break;
+                            }
+                            else if (Session["" + i] != null)
+                            {
+                                <option value="@Session[""+i]">@Session["" + i]</option>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="acnt">商品名稱:</label>
+                @Html.EditorFor(model => model.Product_Name, new { htmlAttributes = new { @class = "form-control", @placeholder = "名稱" } })
+                @Html.ValidationMessageFor(model => model.Product_Name, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group">
+                <label for="">商品介紹:</label>
+                @Html.EditorFor(model => model.Product_Introduce, new { htmlAttributes = new { @class = "form-control", @type = "text", @placeholder = "介紹" } })
+                @Html.ValidationMessageFor(model => model.Product_Introduce, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group">
+                <div>
+                    <label for="">請選擇商品類別:</label>
+                    <br />
+                    <select name="select" style="width: 250px; height: 40px;">
+                        <option value="" disabled>請選擇商品類別</option>
+                        <option value="肉類" selected>肉類</option>
+                        <option value="蔬菜">蔬菜</option>
+                        <option value="水果">水果</option>
+                        <option value="其他">其他</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="">商品產地:</label>
+                @Html.EditorFor(model => model.Product_Origin, new { htmlAttributes = new { @class = "form-control", @type = "text", @placeholder = "商品產地" } })
+                @Html.ValidationMessageFor(model => model.Product_Origin, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group">
+                <label for="">商品庫存:</label>
+                @Html.EditorFor(model => model.Product_Stock, new { htmlAttributes = new { @class = "form-control", @type = "number", @placeholder = "商品庫存" } })
+                @Html.ValidationMessageFor(model => model.Product_Stock, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group">
+                <label for="">商品規格:</label>
+                @Html.EditorFor(model => model.Product_Spec, new { htmlAttributes = new { @class = "form-control", @placeholder = "公斤為1單位或幾顆為1單位 例如:公斤" } })
+                @Html.ValidationMessageFor(model => model.Product_Spec, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group">
+                <label for="">商品價格:</label>
+                @Html.EditorFor(model => model.Product_Price, new { htmlAttributes = new { @class = "form-control", @type = "number", @placeholder = "商品每單位價格" } })
+                @Html.ValidationMessageFor(model => model.Product_Price, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group">
+                <input type="file" accept=".png, .jpg, .jpeg" name="File" id="File" />
+            </div>
+            <div class="form-group">
+                <button type="button" value="Create" class="btn btn-default" onclick="Send();">加入</button>
+                <a type="button" class="btn btn-default" style="" href="@Url.Action("SelectProduct", "BackProduct")">返回</a>
+
+                <br />
+            </div>
+        </div>
+    }
+
+    @section Scripts {
+        @Scripts.Render("~/bundles/jqueryval")
+    }
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            if ('@ViewData["upmsg"]' != '') {
+            swal("成功!", '@ViewData["upmsg"]', "success");
+        }
+    });
+    function Send() {
+        debugger;
+        if ($('#Product_ID').val() == "") {
+            swal("錯誤!", "請輸入商品ID！", "error");
+            return false;
+        }
+        else if ($('#File').val() == "") {
+            swal("錯誤!", "請匯入圖片！", "error");
+            return false;
+        }
+        else if ($('#Product_Name').val() == "") {
+            swal("錯誤!", "請輸入名稱！", "error");
+            return false;
+        }
+        else if ($('#Product_Introduce').val() == "") {
+            swal("錯誤!", "請輸入介紹！", "error");
+            return false;
+        }
+        else if ($('#Product_Stock').val() == "") {
+            return false;
+        }
+        else if ($('#Store_ID').val() == "") {
+            swal("錯誤!", "請輸入商家ID！", "error");
+            return false;
+        }
+        else if ($('#Product_Price').val() == "") {
+            swal("錯誤!", "請輸入價格！", "error");
+            return false;
+        }
+        else if ($('#Product_Origin').val() == "") {
+            swal("錯誤!", "請輸入產地！", "error");
+            return false;
+        }
+        else if ($('#Product_Spec').val() == "") {
+            swal("錯誤!", "請輸入規格！", "error");
+            return false;
+        }
+        else {
+            $('#UP_Form').submit();
+        }
+    }
+    </script>
+</body>

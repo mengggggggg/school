@@ -1,0 +1,240 @@
+﻿@model List<MCU_GroupTen.Models.Cart>
+
+@{
+    ViewBag.Title = "購物車";
+    int ID = 0;
+}
+
+<body>
+
+    <style>
+        body {
+            background-color: #e5ffe5;
+            font-family: 'Open Sans', sans-serif;
+        }
+
+        div {
+            /* 字體屬性 */
+            font-family: Arial;
+            font-style: normal;
+            font-weight: 600;
+        }
+
+        body, button, input, select, textarea, h1, h2, h3, h4, h5, h6 {
+            font-family: Microsoft YaHei,'宋體', Tahoma, Helvetica, Arial, "\5b8b\4f53", sans-serif;
+        }
+    </style>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="panel panel-primary">
+                    <div class="h1 text-center panel-heading">@Session["Member_Name"]的購物車</div>
+                </div>
+            </div>
+        </div>
+        <form method="post" id="dc">
+            <div class="panel-group" id="accordion">
+                <div class="panel panel-default">
+                    @for (var i = 0; i < Model.Count; i++)
+                    {
+                        if (i > 0)
+                        {
+                            if (Model[i].Store_ID != Model[i - 1].Store_ID)
+                            {
+                                ID = Model[i].Store_ID;
+                                <div class="panel panel-info">
+                                    <div class="panel-heading">
+                                        <h4 class="panel-title">
+                                            <a data-toggle="collapse" data-parent="#accordion" href="#@ID">@Html.DisplayFor(modelItem => Model[i].Store_Name)</a>
+                                        </h4>
+                                    </div>
+                                    <div id="@ID" class="panel-collapse collapse in">
+                                        @for (var j = i; j < Model.Count; j++)
+                                        {
+                                            if (Model[j].Store_ID == Model[i].Store_ID)
+                                            {
+                                                <div class="panel-body">
+                                                    <div class="col-sm-2">
+                                                        <h3>商品照片</h3>
+                                                        <a href="@Url.Action("Product", "Proshop",new { Pid=@Html.DisplayFor(modelItem => Model[j].Product_ID),Sid=@Html.DisplayFor(modelItem => Model[j].Store_ID) })" class="right">
+                                                            <img src="@DisplayImage(Model[j].Product_Picture)" class="img-responsive" style="width:max-content;height:150px">
+                                                            @functions{
+                                                                public string DisplayImage(byte[] imageData)
+                                                                {
+                                                                    string src = string.Empty;
+                                                                    if (imageData != null)
+                                                                    {
+                                                                        string base64 = Convert.ToBase64String(imageData);
+                                                                        src = string.Format("data:image/gif;base64,{0}", base64);
+                                                                    }
+                                                                    return src;
+                                                                }
+                                                            }
+                                                        </a>
+                                                    </div>
+                                                    <div class="col-sm-2">
+                                                        <h3>商品名稱</h3>
+                                                        <p style="font-size:20px"><a href="@Url.Action("Product", "Proshop",new { Pid=@Html.DisplayFor(modelItem => Model[j].Product_ID),Sid=@Html.DisplayFor(modelItem => Model[j].Store_ID) })" class="right">@Html.DisplayFor(modelItem => Model[j].Product_Name)</a></p>
+                                                    </div>
+                                                    <div class="col-sm-2">
+                                                        <h3>商家名稱</h3>
+                                                        <p style="font-size:20px"><a href="@Url.Action("Store", "Proshop",new { Sid=@Html.DisplayFor(modelItem => Model[j].Store_ID) })" class="right">@Html.DisplayFor(modelItem => Model[j].Store_Name)</a></p>
+                                                    </div>
+                                                    <div class="col-sm-1">
+                                                        <h3>規格</h3>
+                                                        <p style="font-size:20px">@Html.DisplayFor(modelItem => Model[j].Product_Spec)</p>
+                                                    </div>
+                                                    <div class="col-sm-1">
+                                                        <h3>單價</h3>
+                                                        <p style="font-size:20px">@Html.DisplayFor(modelItem => Model[j].Product_Price)</p>
+                                                    </div>
+                                                    <div class="col-sm-1">
+                                                        <h3>數量</h3>
+                                                        <p style="font-size:20px">@Html.DisplayFor(modelItem => Model[j].Product_Count)</p>
+                                                    </div>
+                                                    <div class="col-sm-2">
+                                                        <h3>總計</h3>
+                                                        <p style="font-size:20px">@Html.DisplayFor(modelItem => Model[j].Order_Amount)</p>
+                                                    </div>
+                                                    <div class="col-sm-1">
+                                                        <h3>勾選</h3>
+                                                        <p style="font-size:20px"><input type="checkbox" style="width:25px;height:25px;" name="Oid" value="@Html.DisplayFor(modelItem => Model[j].Order_Details_ID)"></p>
+                                                    </div>
+                                                </div>
+
+                                            }
+                                        }
+                                    </div>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            ID = Model[i].Store_ID;
+                            <div class="panel panel-info">
+                                <div class="panel-heading">
+                                    <h4 class="panel-title">
+                                        <a data-toggle="collapse" data-parent="#accordion" href="#@ID">@Html.DisplayFor(modelItem => Model[i].Store_Name)</a>
+                                    </h4>
+                                </div>
+                                <div id="@ID" class="panel-collapse collapse in">
+                                    @for (var j = 0; j < Model.Count; j++)
+                                    {
+                                        if (j > 0)
+                                        {
+                                            if (Model[j].Store_ID != Model[j - 1].Store_ID)
+                                            {
+                                                break;
+                                            }
+                                        }
+                                        <div class="panel-body">
+                                            <div class="col-sm-2">
+                                                <h3>商品照片</h3>
+                                                <a href="@Url.Action("Product", "Proshop",new { Pid=@Html.DisplayFor(modelItem => Model[j].Product_ID),Sid=@Html.DisplayFor(modelItem => Model[j].Store_ID) })" class="right">
+                                                    <img src="@DisplayImage(Model[j].Product_Picture)" class="img-responsive" style="width:max-content;height:150px">
+                                                </a>
+                                            </div>
+                                            <div class="col-sm-2">
+                                                <h3>商品名稱</h3>
+                                                <p style="font-size:20px"><a href="@Url.Action("Product", "Proshop",new { Pid=@Html.DisplayFor(modelItem => Model[j].Product_ID),Sid=@Html.DisplayFor(modelItem => Model[j].Store_ID) })" class="right">@Html.DisplayFor(modelItem => Model[j].Product_Name)</a></p>
+                                            </div>
+                                            <div class="col-sm-2">
+                                                <h3>商家名稱</h3>
+                                                <p style="font-size:20px"><a href="@Url.Action("Store", "Proshop",new { Sid=@Html.DisplayFor(modelItem => Model[j].Store_ID) })" class="right">@Html.DisplayFor(modelItem => Model[j].Store_Name)</a></p>
+                                            </div>
+                                            <div class="col-sm-1">
+                                                <h3>規格</h3>
+                                                <p style="font-size:20px">@Html.DisplayFor(modelItem => Model[j].Product_Spec)</p>
+                                            </div>
+                                            <div class="col-sm-1">
+                                                <h3>單價</h3>
+                                                <p style="font-size:20px">@Html.DisplayFor(modelItem => Model[j].Product_Price)</p>
+                                            </div>
+                                            <div class="col-sm-1">
+                                                <h3>數量</h3>
+                                                <p style="font-size:20px">@Html.DisplayFor(modelItem => Model[j].Product_Count)</p>
+                                            </div>
+                                            <div class="col-sm-2">
+                                                <h3>總計</h3>
+                                                <p style="font-size:20px">@Html.DisplayFor(modelItem => Model[j].Order_Amount)</p>
+                                            </div>
+                                            <div class="col-sm-1">
+                                                <h3>勾選</h3>
+                                                <p style="font-size:20px"><input type="checkbox" style="width:25px;height:25px;" name="Oid" value="@Html.DisplayFor(modelItem => Model[j].Order_Details_ID)"></p>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        }
+
+
+                    }
+                    <input type="hidden" name="checkBoxValue" value="" id="checkBoxValue">
+                    <div class="panel-footer" style="height:50px">
+                        <input type="checkbox" name="myall" onclick="checkall(this.checked)" style="width: 20px; height: 20px; float: right;" />
+                        <p style="width: 50px; height: 20px; display: inline; float: right;font-size:20px; ">全選</p>
+                        <input type="button" onclick="getTheCheckBoxValue2();" value="結帳" form="dc" class="btn btn-primary" style="float: right; margin-right: 20px">
+                        <input type="button" onclick="getTheCheckBoxValue();" value="取消" form="dc" class="btn btn-danger" style="float:right;margin-right: 20px">
+                    </div>
+                </div>
+            </div>
+        </form>
+
+    </div>
+    <br />
+    <br />
+</body>
+<br />
+<br />
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script type="text/javascript">
+    function checkall(c) {
+        var arr = document.getElementsByName('Oid');
+        if (c) {
+            for (var i = 0; i < arr.length; i++) {
+                arr[i].checked = true;
+            }
+        }
+        else {
+            for (var i = 0; i < arr.length; i++) {
+                arr[i].checked = false;
+            }
+        }
+    }
+    function getTheCheckBoxValue() {
+        var test = $("input[name='Oid']:checked");
+        var checkBoxValue = "";
+        test.each(function () {
+            checkBoxValue += $(this).val() + ",";
+        })
+        checkBoxValue = checkBoxValue.substring(0, checkBoxValue.length - 1);
+        $("#checkBoxValue").val(checkBoxValue);
+        $("#dc").attr("action", "@Url.Action("Deletecart", "Proshop")");
+        $("#dc").submit();
+    }
+    function getTheCheckBoxValue2() {
+        var test = $("input[name='Oid']:checked");
+        var checkBoxValue = "";
+        test.each(function () {
+            checkBoxValue += $(this).val() + ",";
+        })
+        checkBoxValue = checkBoxValue.substring(0, checkBoxValue.length - 1);
+        $("#checkBoxValue").val(checkBoxValue);
+        $("#dc").attr("action", "@Url.Action("Checkout", "Checkout")");
+        $("#dc").submit();
+    }
+    $(function () {
+        if ('@ViewData["cartmsg"]' == '已刪除所選商品') {
+             swal("成功!", '@ViewData["cartmsg"]', "success");
+        }
+        else if ('@ViewData["cartmsg"]' == '請選擇商品') {
+             swal("錯誤!", '@ViewData["cartmsg"]', "error");
+        }
+        else if ('@ViewData["carerror"]' !="") {
+             swal("不好意思!", '@ViewData["carerror"]', "warning");
+        }
+    });
+</script>
+

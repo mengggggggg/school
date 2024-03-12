@@ -1,0 +1,136 @@
+﻿@model MCU_GroupTen.Models.Proshop
+
+@{
+    ViewBag.Title = "修改商家資料";
+    var SID = Model.Store_ID;
+    DateTime Store = Model.Store_Startdate;
+    string Date = Store.ToString("yyyy-MM-dd");
+}
+
+
+@using (Html.BeginForm(ViewContext.RouteData.GetRequiredString("Action"), ViewContext.RouteData.GetRequiredString("Controller"), new { }, FormMethod.Post, new { @class = "form-horizontal row-border validate", @id = "SS_Form", @enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    <div class="container">
+        <div class="form-horizontal">
+            <h4>修改商家資料</h4>
+            <hr />
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="form-group">
+                <label for="">商家名稱:</label>
+                @Html.EditorFor(model => model.Store_Name, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Store_Name, "", new { @class = "text-danger" })
+                <button type="button" value="Create" class="btn btn-danger" onclick="check_Store_Name_Edit();">檢查</button>
+            </div>
+
+            <div class="form-group">
+                <label for="">商家介紹</label>
+                @Html.EditorFor(model => model.Store_Introduce, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Store_Introduce, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group">
+                <label for="">開店日期</label>
+                <input class="form-control" type="date" value="@Date" id="Date" name="Date">
+            </div>
+            <div class="form-group">
+                <label for="">更新商品圖片:</label>
+                <input type="file" accept=".png, .jpg, .jpeg" name="File" id="File" />
+            </div>
+            <div class="form-group">
+                <button type="button" value="Save" class="btn btn-default" onclick="Send();">更新</button>
+                <a type="button" class="btn btn-primary" style="" href="@Url.Action("SelectforStore", "BackStoreFS")">回到商家列表</a>
+            </div>
+        </div>
+    </div>
+}
+
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script type="text/javascript">
+        $(function () {
+        if ('@ViewData["usmsg"]' != '') {
+             swal("成功!", '@ViewData["usmsg"]', "success");
+        }
+        });
+    function check_Store_Name_Edit() {
+        debugger;
+        if ($("#Store_Name").val() == "") {
+            swal("錯誤!", "請輸入商家名稱!", "error");
+            return false;
+        }
+        var Model = {
+            Store_Name: $("#Store_Name").val(),
+            Store_ID: @Model.Store_ID,
+        };
+        $.ajax({
+            url: '@Url.Action("check_Store_Name_Edit", "BackStore")',
+            data: Model,
+            type: 'POST',
+            cache: false,
+            async: false,
+            success: function (data) {
+                if (data != '') {
+                    if (data == "Y") {
+                        swal("成功!", "驗證成功!", "success");
+                        return true;
+                    }
+                    else {
+                        $("#Store_Name").val('');
+                        $("#Store_Name").focus();
+                        swal("錯誤!", "已有此商店名稱，請更換您的名稱!", "error");
+                        return false;
+                    }
+                }
+            }
+        });
+            }
+    function check_Store_Name_Edit2() {
+        debugger;
+        if ($("#Store_Name").val() == "") {
+            swal("錯誤!", "請輸入商家名稱!", "error");
+            return false;
+        }
+        var Model = {
+            Store_Name: $("#Store_Name").val(),
+            Store_ID: @Model.Store_ID,
+        };
+        $.ajax({
+            url: '@Url.Action("check_Store_Name_Edit", "BackStore")',
+            data: Model,
+            type: 'POST',
+            cache: false,
+            async: false,
+            success: function (data) {
+                if (data != '') {
+                    if (data == "Y") {
+                        return true;
+                    }
+                    else {
+                        $("#Store_Name").val('');
+                        $("#Store_Name").focus();
+                        swal("錯誤!", "已有此商店名稱，請更換您的名稱!", "error");
+                        return false;
+                    }
+                }
+            }
+        });
+            }
+    function Send() {
+        check_Store_Name_Edit2();
+        debugger;
+        if ($('#Date').val() == "") {
+            swal("錯誤!", "請輸入日期！", "error");
+            return false;
+        }
+        else if ($('#Store_Name').val() == "") {
+            swal("錯誤!", "請輸入商家名稱！", "error");
+            return false;
+        }
+        else if ($('#Store_Introduce').val() == "") {
+            swal("錯誤!", "請輸入商家介紹！", "error");
+            return false;
+        }
+        else {
+            $('#SS_Form').submit();
+        }
+    }
+</script>

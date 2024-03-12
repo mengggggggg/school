@@ -1,0 +1,147 @@
+﻿@model List<MCU_GroupTen.Models.Cart>
+
+@{
+    ViewBag.Title = "訂單列表";
+}
+<style>
+    table {
+        border-collapse: collapse;
+        width: 770px;
+        /*自動斷行*/
+        word-wrap: break-word;
+        table-layout: fixed;
+    }
+</style>
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12">
+            <table class="table table-bordered">
+                <thead class="thead-light">
+                    <tr>
+                        <th scope="col"> </th>
+                        <th scope="col">訂單編號</th>
+                        <th scope="col">訂單狀態</th>
+                        <th scope="col">下單日期</th>
+                        <th scope="col">訂單地址</th>
+                        <th scope="col">付費方式</th>
+                        <th scope="col">配送方式</th>
+                        <th scope="col">訂單備註</th>
+                        <th scope="col">所屬帳號</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (var i = 0; i < Model.Count; i++)
+                    {
+                        if (i > 0)
+                        {
+                            if (Model[i].Order_ID == Model[i - 1].Order_ID)
+                            {
+                                continue;
+                            }
+                        }
+                        <tr>
+                            <th scope="row">訂單資訊</th>
+                            <td>@Html.DisplayFor(modelItem => Model[i].Order_ID)</td>
+                            <td>
+                                @if (Model[i].Order_Status == "1")
+                                {
+                                    <p style="font-size:20px">未完成</p>
+                                }
+                                else if (Model[i].Order_Status == "2")
+                                {
+                                    <p style="font-size:20px">已完成</p>
+                                }
+                            </td>
+                            <td>@Html.DisplayFor(modelItem => Model[i].Order_Date)</td>
+                            <td>@Html.DisplayFor(modelItem => Model[i].Order_Address)</td>
+                            <td>
+                                @if (Model[i].Order_Pay_Way == "home")
+                                {
+                                    <p style="font-size:20px">貨到付款</p>
+                                }
+                            </td>
+                            <td>
+                                @if (Model[i].Order_Delivery_Way == "home")
+                                {
+                                    <p style="font-size:20px">宅配到家</p>
+                                }
+                                else if (Model[i].Order_Delivery_Way == "7-11")
+                                {
+                                    <p style="font-size:20px">7-11超商自取</p>
+                                }
+                                else if (Model[i].Order_Delivery_Way == "family")
+                                {
+                                    <p style="font-size:20px">全家超商自取</p>
+                                }
+                                else if (Model[i].Order_Delivery_Way == "OK")
+                                {
+                                    <p style="font-size:20px">OK超商自取</p>
+                                }
+                            </td>
+                            <td>@Html.DisplayFor(modelItem => Model[i].Order_Note)</td>
+                            <td>@Html.DisplayFor(modelItem => Model[i].Member_Account)</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">訂單總金額</th>
+                            <td>@Html.DisplayFor(modelItem => Model[i].Order_Total_Amount)</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">其他功能</th>
+                            <td></td>
+                            <td></td>
+                            <td>
+                                <a type="button" style="" class="btn btn-default" href="@Url.Action("uptForOrder", "BackOrderFO", new { Order_ID = Model[i].Order_ID })">修改</a>
+                            </td>
+                            <td>
+                                <a style="" class="btn btn-danger" onclick="deleteOrder(@Model[i].Order_ID)"> 刪除 </a>
+                            </td>
+                            <td>
+                                <a type="button" class="btn btn-default" style="" href="@Url.Action("DetailForOrder", "BackOrderFO", new { Order_ID = Model[i].Order_ID })">查看更多</a>
+                            </td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <a type="button" class="btn btn-primary" style="" href="@Url.Action("SelectforStore", "BackStoreFS")">管理商家</a>
+            <a type="button" style="" class="btn btn-primary" href="@Url.Action("SelectforProduct", "BackProductFP")">管理商品</a>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script type="text/javascript">
+    $(function () {
+        if ('@ViewData["uomsg"]' != '') {
+             swal("成功!", '@ViewData["uomsg"]', "success");
+        }
+        else if ('@ViewData["delo"]' != '') {
+             swal("成功!", '@ViewData["delo"]', "success");
+        }
+    });
+    function deleteOrder(id) {
+        swal({
+            title: "是否確定刪除?",
+            icon: "warning",
+            buttons: {
+                confirm: {
+                    text: "是",
+                    value: "true"
+                },
+                danger: {
+                    text: "否",
+                    value: "false"
+                }
+            }
+        }).then((value) => {
+            if (value == "true") {
+                location.href = "/BackOrderFO/delForOrder?Order_ID=" + id;
+            }
+            else if (value == "false") {
+                location.href = "@Url.Action("SelectforOrder", "BackOrderFO")";
+            }
+        });
+    }
+</script>
+

@@ -1,0 +1,97 @@
+﻿@model MCU_GroupTen.Models.MemberModel
+
+@{
+    ViewBag.Title = "商家列表";
+}
+<div class="container">
+    <div class="row col-sm-12">
+        <p>
+            @Html.ActionLink("返回上一頁", "SelectMember", "BackMember")
+        </p>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="form-group">
+                        <label for="">會員帳號:</label>
+                        <p style="font-size:20px">@Html.DisplayFor(o => o.Member_Account)</p>
+                    </div>
+                    <div class="form-group">
+                        <label for="">會員姓名:</label>
+                        <p style="font-size:20px">@Html.DisplayFor(o => o.Member_Name)</p>
+                    </div>
+                    <div class="form-group">
+                        <label for="">會員信箱:</label>
+                        <p style="font-size:20px">@Html.DisplayFor(o => o.Member_Mail)</p>
+                    </div>
+                    <div class="form-group">
+                        <label for="">會員聯絡電話:</label>
+                        <p style="font-size:20px">@Html.DisplayFor(o => o.Member_Phone)</p>
+                    </div>
+                    <div class="form-group">
+                        <label for="">會員生日:</label>
+                        <p style="font-size:20px">@Html.DisplayFor(o => o.Member_Birth)</p>
+                    </div>
+                    <div class="form-group">
+                        <label for="">會員性別:</label>
+                        @if (Html.DisplayFor(o => o.Member_Sex).ToString() == "M")
+                        {
+                            <p style="font-size:20px">男性</p>
+                        }
+                        else if (Html.DisplayFor(o => o.Member_Sex).ToString() == "F")
+                        {
+                            <p style="font-size:20px">女性</p>
+                        }
+                    </div>
+                    <div class="form-group">
+                        <label for="">會員住址:</label>
+                        <p style="font-size:20px">@Html.DisplayFor(o => o.Member_Address)</p>
+                    </div>
+                    <div class="form-group">
+                        <label for="">會員身分:</label>
+                        <p style="font-size:20px">@Html.DisplayFor(o => o.Member_identity)</p>
+                    </div>
+                    <div class="form-group">
+                        <a type="button" class="btn btn-default" href="@Url.Action("uptMember", "BackMember", new { Member_Account = Model.Member_Account })">修改</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script type="text/javascript">
+    $(function () {
+        if ('@ViewData["usmsg"]' != '') {
+             swal("成功!", '@ViewData["usmsg"]', "success");
+        }
+    });
+    function deleteStore(id) {
+        swal({
+            title: "是否確定刪除?",
+            icon: "warning",
+            buttons: {
+                confirm: {
+                    text: "是",
+                    value: "true"
+                },
+                danger: {
+                    text: "否",
+                    value: "false"
+                }
+            }
+        }).then((value) => {
+            if (value == "true") {
+                location.href = "/BackStore/delStore?Store_ID="+id;
+            }
+            else if (value == "false") {
+                location.href = "@Url.Action("SelectStore", "BackStore")";
+            }
+        });
+    }
+
+</script>

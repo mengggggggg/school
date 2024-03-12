@@ -1,0 +1,141 @@
+﻿@model MCU_GroupTen.Models.MemberModel
+@{
+    ViewBag.Title = "會員中心";
+    DateTime Member = Model.Member_Birth;
+    string Date = Member.ToString("yyyy-MM-dd");
+}
+<body onkeydown="_key()">
+    <style>
+        body {
+            background-color: #e5ffe5;
+            font-family: 'Open Sans', sans-serif;
+        }
+
+        div {
+            /* 字體屬性 */
+            font-family: Arial;
+            font-style: normal;
+            font-weight: 600;
+        }
+
+        body, button, input, select, textarea, h1, h2, h3, h4, h5, h6 {
+            font-family: Microsoft YaHei,'宋體', Tahoma, Helvetica, Arial, "\5b8b\4f53", sans-serif;
+        }
+    </style>
+    <div class="container-fluid">
+        <div class="row content">
+            <div class="col-sm-2 sidenav hidden-xs">
+                <h2>會員專區</h2>
+                <ul class="nav nav-pills nav-stacked">
+                    <li><a href="@Url.Action("Member_Center", "Member")">會員中心</a></li>
+                    <li>
+                        <a href="@Url.Action("Member_Order", "Member")">
+                            (已完成/正在進行中) <br />
+                            訂單查詢
+                        </a>
+                    </li>
+                    <li><a href="@Url.Action("Member_Questions", "Member")">常見問題</a></li>
+                    <li><a href="@Url.Action("Member_Change", "Member")">修改密碼</a></li>
+                    <li><a href="@Url.Action("Logout", "Member")">登出</a></li>
+                </ul><br>
+            </div>
+            <div class="col-sm-8">
+                <br />
+                @using (Html.BeginForm(ViewContext.RouteData.GetRequiredString("Action"), ViewContext.RouteData.GetRequiredString("Controller"), new { }, FormMethod.Post, new { @class = "form-horizontal row-border validate", @id = "CG_Form" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <div class="container">
+                        <h2>註冊會員</h2>
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        <div class="form-group" style="margin-left:3px;">
+                            <label for="acnt">帳號:</label>
+                            <label for="acnt">@Session["Member_Account"]</label>
+                        </div>
+                        <div class="form-group" style="margin-left:3px;">
+                            <label for="">姓名:</label>
+                            @Html.EditorFor(model => model.Member_Name, new { htmlAttributes = new { @class = "form-control", @type = "text" } })
+                            @Html.ValidationMessageFor(model => model.Member_Name, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="form-group" style="margin-left:3px;">
+                            <label for="">電子信箱(Email):</label>
+                            @Html.EditorFor(model => model.Member_Mail, new { htmlAttributes = new { @class = "form-control", @type = "email" } })
+                            @Html.ValidationMessageFor(model => model.Member_Mail, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="form-group" style="margin-left:3px;">
+                            <label for="add">地址:</label>
+                            @Html.EditorFor(model => model.Member_Address, new { htmlAttributes = new { @class = "form-control", @type = "text" } })
+                            @Html.ValidationMessageFor(model => model.Member_Address, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="form-group" style="margin-left:3px;">
+                            <label for="birth">生日:</label>
+                            <input class="form-control" type="date" value="@Date" id="Date" name="Date">
+                        </div>
+                        <div class="form-group" style="margin-left:3px;">
+                            <label for="birth">電話號碼:</label>
+                            @Html.TextBoxFor(o => o.Member_Phone, new { @class = "form-control", @maxlength = "10" })
+                            @*@Html.EditorFor(model => model.Member_Phone, new { htmlAttributes = new { @class = "form-control", @type = "text", @placeholder = "電話號碼" } })*@
+                            @Html.ValidationMessageFor(model => model.Member_Phone, "", new { @class = "text-danger" })
+                        </div>
+                        <br />
+                        <div class="form-group" style="margin-left:3px;">
+                            <label for="optradio">性別:</label>
+                            @if (Html.DisplayFor(model => model.Member_Sex).ToString() == "M")
+                            {
+                                <label>男性</label>
+                            }
+                            else if (Html.DisplayFor(model => model.Member_Sex).ToString() == "F")
+                            {
+                                <label>女性</label>
+                            }
+                        </div>
+                        <div class="form-group" style="margin-left:3px;">
+                            <button type="button" value="Create" class="btn btn-danger" onclick="Send();">更新</button>
+                            <a href="@Url.Action("Member_Center", "Member")" class="btn btn-default">取消更新</a>
+                            <br />
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</body>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script type="text/javascript">
+    function _key() {
+        if (event.keyCode == 13)
+            Send();
+    }
+    function Send() {
+        debugger;
+        //是否空值
+        if ($('#Member_Name').val() == "") {
+            swal("錯誤!", "請輸入名稱！", "error");
+            return false;
+        }
+        else if ($('#Member_Mail').val() == "") {
+            swal("錯誤!", "請輸入信箱！", "error");
+            return false;
+        }
+        else if ($('#Member_Address').val() == "") {
+            swal("錯誤!", "請輸入地址！", "error");
+            return false;
+        }
+        else if ($('#Date').val() == "") {
+            swal("錯誤!", "請輸入生日日期！", "error");
+            return false;
+        }
+        else if ($('#Member_Phone').val() == "") {
+            swal("錯誤!", "請輸入電話號碼！", "error");
+            return false;
+        }
+        //是否重複
+
+        else {
+            $('#CG_Form').submit();
+        }
+    }
+</script>

@@ -1,0 +1,138 @@
+﻿@model MCU_GroupTen.Models.Cart
+@{
+    ViewBag.Title = "修改訂單";
+}
+@using (Html.BeginForm(ViewContext.RouteData.GetRequiredString("Action"), ViewContext.RouteData.GetRequiredString("Controller"), new { }, FormMethod.Post, new { @class = "form-horizontal row-border validate", @id = "UO_Form" }))
+{
+    @Html.AntiForgeryToken()
+    <div class="container">
+        <table class="table table-bordered">
+            <thead class="thead-light">
+                <tr>
+                    <th scope="col"> </th>
+                    <th scope="col">訂單編號</th>
+                    <th scope="col">訂單狀態</th>
+                    <th scope="col">訂單日期</th>
+                    <th scope="col">訂單付費方式</th>
+                    <th scope="col">訂單配送方式</th>
+                    <th scope="col">訂單備註</th>
+                    <th scope="col">訂單總金額</th>
+                    <th scope="col">所屬訂單帳號</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th scope="row">訂單</th>
+                    <td>@Html.DisplayFor(o => o.Order_ID)</td>
+                    <td>
+                        @if (Model.Order_Status == "1")
+                        {
+                            <select name="SelectStatus" style="width: 150px; height: 40px;">
+                                <option value="" disabled>請選擇訂單狀態</option>
+                                <option value="1" selected>未完成</option>
+                                <option value="2">已完成</option>
+                            </select>
+                        }
+                        else if (Model.Order_Status == "2")
+                        {
+                            <select name="SelectStatus" style="width: 150px; height: 40px;">
+                                <option value="" disabled>請選擇訂單狀態</option>
+                                <option value="1">未完成</option>
+                                <option value="2" selected>已完成</option>
+                            </select>
+                        }
+                    </td>
+                    <td>@Html.DisplayFor(o => o.Order_Date)</td>
+                    <td>
+                        @if (Model.Order_Pay_Way == "home")
+                        {
+                            <select name="SelectPay_Way" style="width: 150px; height: 40px;">
+                                <option value="" disabled>請選擇付費方式</option>
+                                <option value="home" selected>貨到付款</option>
+                            </select>
+                        }
+                    </td>
+                    <td>
+                        @if (Model.Order_Delivery_Way == "home")
+                        {
+                            <select name="SelectDelivery_Way" style="width: 150px; height: 40px;">
+                                <option value="" disabled>請選擇寄送方式</option>
+                                <option value="home" selected>宅配到家</option>
+                                <option value="7-11">7-11超商自取</option>
+                                <option value="family">全家超商自取</option>
+                                <option value="OK">OK超商自取</option>
+                            </select>
+                        }
+                        else if (Model.Order_Delivery_Way == "7-11")
+                        {
+                            <select name="SelectDelivery_Way" style="width: 150px; height: 40px;">
+                                <option value="" disabled>請選擇寄送方式</option>
+                                <option value="home">宅配到家</option>
+                                <option value="7-11" selected>7-11超商自取</option>
+                                <option value="family">全家超商自取</option>
+                                <option value="OK">OK超商自取</option>
+                            </select>
+                        }
+                        else if (Model.Order_Delivery_Way == "family")
+                        {
+                            <select name="SelectDelivery_Way" style="width: 150px; height: 40px;">
+                                <option value="" disabled>請選擇寄送方式</option>
+                                <option value="home">宅配到家</option>
+                                <option value="7-11">7-11超商自取</option>
+                                <option value="family" selected>全家超商自取</option>
+                                <option value="OK">OK超商自取</option>
+                            </select>
+                        }
+                        else if (Model.Order_Delivery_Way == "OK")
+                        {
+                            <select name="SelectDelivery_Way" style="width: 150px; height: 40px;">
+                                <option value="" disabled>請選擇寄送方式</option>
+                                <option value="home">宅配到家</option>
+                                <option value="7-11">7-11超商自取</option>
+                                <option value="family">全家超商自取</option>
+                                <option value="OK" selected>OK超商自取</option>
+                            </select>
+                        }
+                    </td>
+                    <td>
+                        @Html.EditorFor(model => model.Order_Note, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Order_Note, "", new { @class = "text-danger" })
+                    </td>
+                    <td>@Html.DisplayFor(o => o.Order_Total_Amount)</td>
+                    <td>@Html.DisplayFor(o => o.Member_Account)</td>
+                </tr>
+                <tr>
+                    <th scope="row">訂單地址</th>
+                    <td colspan="8">
+                        @Html.EditorFor(model => model.Order_Address, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Order_Address, "", new { @class = "text-danger" })
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <button type="button" value="Create" class="btn btn-danger" onclick="Send();">更新</button>
+        <a href="@Url.Action("SelectforOrder", "BackOrderFO")" class="btn btn-default">取消更新</a>
+        <br />
+    </div>
+}
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script type="text/javascript">
+    function Send() {
+        debugger;
+        //是否空值
+        if ($('#Order_Address').val() == "") {
+            swal("錯誤!", "請輸入地址！", "error");
+            return false;
+        }
+        else if ($('#Order_Note').val() == "") {
+            swal("錯誤!", "請輸入備註！", "error");
+            return false;
+        }
+        else {
+            $('#UO_Form').submit();
+        }
+    }
+</script>

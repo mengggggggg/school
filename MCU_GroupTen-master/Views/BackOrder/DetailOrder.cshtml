@@ -1,0 +1,88 @@
+﻿@model List<MCU_GroupTen.Models.Cart>
+
+@{
+    int count = 0;
+    ViewBag.Title = "訂單明細列表";
+}
+<style>
+    table {
+        border-collapse: collapse;
+        width: 770px;
+        /*自動斷行*/
+        word-wrap: break-word;
+        table-layout: fixed;
+    }
+</style>
+<div class="container">
+    <div class="row col-sm-12">
+        <p>
+            <a type="button" class="btn btn-default" style="" href="@Url.Action("SelectOrder", "BackOrder")">返回上一頁</a>
+        </p>
+    </div>
+</div>
+
+<div class="container">
+    <table class="table table-bordered">
+        <thead class="thead-light">
+            <tr>
+                <th scope="col"> </th>
+                <th scope="col">商品所屬商家</th>
+                <th scope="col">商品名稱</th>
+                <th scope="col">商品規格</th>
+                <th scope="col">商品價格</th>
+                <th scope="col">商品數量</th>
+                <th scope="col">商品總價格</th>
+                <th scope="col">所屬訂單帳號</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var o in Model)
+            {
+                count++;
+                <tr>
+                    <th scope="row">第 @count 筆商品</th>
+                    <td>@Html.DisplayFor(modelItem => o.Store_Name)</td>
+                    <td>@Html.DisplayFor(modelItem => o.Product_Name)</td>
+                    <td>@Html.DisplayFor(modelItem => o.Product_Spec)</td>
+                    <td>@Html.DisplayFor(modelItem => o.Product_Price)</td>
+                    <td>@Html.DisplayFor(modelItem => o.Product_Count)</td>
+                    <td>@Html.DisplayFor(modelItem => o.Order_Amount)</td>
+                    <td>@Html.DisplayFor(modelItem => o.Member_Account)</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <a type="button" style="" class="btn btn-default" href="@Url.Action("uptOrder", "BackOrder", new { Order_ID = Session["Back_Order_ID"] })">修改</a>
+</div>
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script type="text/javascript">
+    $(function () {
+        if ('@ViewData["usmsg"]' != '') {
+             swal("成功!", '@ViewData["usmsg"]', "success");
+        }
+    });
+    function deleteStore(id) {
+        swal({
+            title: "是否確定刪除?",
+            icon: "warning",
+            buttons: {
+                confirm: {
+                    text: "是",
+                    value: "true"
+                },
+                danger: {
+                    text: "否",
+                    value: "false"
+                }
+            }
+        }).then((value) => {
+            if (value == "true") {
+                location.href = "/BackStore/delStore?Store_ID="+id;
+            }
+            else if (value == "false") {
+                location.href = "@Url.Action("SelectStore", "BackStore")";
+            }
+        });
+    }
+
+</script>

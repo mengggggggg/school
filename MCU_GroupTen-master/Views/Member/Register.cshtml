@@ -1,0 +1,255 @@
+﻿@model MCU_GroupTen.Models.MemberModel
+@{
+    ViewBag.Title = "加入會員";
+}
+<body onkeydown="_key()">
+    <style>
+        body {
+            background-color: #e5ffe5;
+            font-family: 'Open Sans', sans-serif;
+        }
+
+        div {
+            /* 字體屬性 */
+            font-family: Arial;
+            font-style: normal;
+            font-weight: 600;
+        }
+
+        body, button, input, select, textarea, h1, h2, h3, h4, h5, h6 {
+            font-family: Microsoft YaHei,'宋體', Tahoma, Helvetica, Arial, "\5b8b\4f53", sans-serif;
+        }
+    </style>
+    @using (Html.BeginForm(ViewContext.RouteData.GetRequiredString("Action"), ViewContext.RouteData.GetRequiredString("Controller"), new { }, FormMethod.Post, new { @class = "form-horizontal row-border validate", @id = "MR_Form" }))
+    {
+        @Html.AntiForgeryToken()
+        <div class="container">
+            <h2>註冊會員</h2>
+            <br />
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="form-group" style="margin-left:3px;">
+                <label for="">姓名:</label>
+                @Html.EditorFor(model => model.Member_Name, new { htmlAttributes = new { @class = "form-control", @placeholder = "姓名" } })
+                @Html.ValidationMessageFor(model => model.Member_Name, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group" style="margin-left:3px;">
+                <label for="acnt">帳號:</label>
+                @Html.EditorFor(model => model.Member_Account, new { htmlAttributes = new { @class = "form-control", @placeholder = "帳號", @onchange = "check();" } })
+                @Html.ValidationMessageFor(model => model.Member_Account, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group" style="margin-left:3px;">
+                <label for="pwd">密碼:</label>
+                @Html.EditorFor(model => model.Member_Password, new { htmlAttributes = new { @class = "form-control", @onchange = "check_change();", @type = "password", @placeholder = "密碼" } })
+                @Html.ValidationMessageFor(model => model.Member_Password, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group" style="margin-left:3px;">
+                <label for="pwd">確認密碼:</label>
+                <input type="password" class="form-control" onchange="check_change();" placeholder="密碼" id="Check_user_passwd">
+                <button class="btn btn-danger" type="button" onclick="check_check();">驗證</button>
+            </div>
+            <div class="form-group" style="margin-left:3px;">
+                <label for="">電子信箱(Email):</label>
+                @Html.EditorFor(model => model.Member_Mail, new { htmlAttributes = new { @class = "form-control", @onchange = "email_check();", @type = "email", @placeholder = "電子信箱" } })
+                @Html.ValidationMessageFor(model => model.Member_Mail, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group" style="margin-left:3px;">
+                <label for="add">地址:</label>
+                @Html.EditorFor(model => model.Member_Address, new { htmlAttributes = new { @class = "form-control", @type = "text", @placeholder = "地址" } })
+                @Html.ValidationMessageFor(model => model.Member_Address, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group" style="margin-left:3px;">
+                <label for="birth">生日:</label>
+                @Html.EditorFor(model => model.Member_Birth, new { htmlAttributes = new { @class = "form-control", @type = "date", @placeholder = "生日" } })
+                @Html.ValidationMessageFor(model => model.Member_Birth, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group" style="margin-left:3px;">
+                <label for="birth">電話號碼:</label>
+                @Html.TextBoxFor(o => o.Member_Phone, new { @class = "form-control", @maxlength = "10", @placeholder = "電話號碼" })
+                @*@Html.EditorFor(model => model.Member_Phone, new { htmlAttributes = new { @class = "form-control", @type = "text", @placeholder = "電話號碼" } })*@
+                @Html.ValidationMessageFor(model => model.Member_Phone, "", new { @class = "text-danger" })
+            </div>
+            @*<div class="form-group">
+                    <br />
+                    <label for="birth">性別:</label>
+                    @Html.EditorFor(model => model.Member_Sex, new { htmlAttributes = new { @class = "form-control", @type = "text", @placeholder = "性別" } })
+                    @Html.ValidationMessageFor(model => model.Member_Sex, "", new { @class = "text-danger" })
+                </div>*@
+            <br />
+            <div class="form-group" style="margin-left:3px;">
+                <label for="optradio">性別</label>
+                @Html.RadioButtonFor(model => model.Member_Sex, "M", new { @checked = "checked" }) @Html.Label("男")
+                @Html.RadioButtonFor(model => model.Member_Sex, "F") @Html.Label("女")
+            </div>
+            <div class="form-group" style="margin-left:3px;">
+                <div class="checkbox">
+                    <label><input type="checkbox" name="remember" id="accept">我同意平台方的使用者條款</label>
+                </div>
+                <br />
+                <button type="button" value="Create" class="btn btn-danger" onclick="Send();">註冊</button>
+                <br />
+            </div>
+        </div>
+    }
+
+    @section Scripts {
+        @Scripts.Render("~/bundles/jqueryval")
+    }
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript">
+    $(function () {
+        if ('@ViewData["RGmsg"]' == '此帳號已存在') {
+            swal("錯誤!", '@ViewData["RGmsg"]', "error");
+        }
+        else if ('@ViewData["RGmsg"]' == '註冊成功') {
+            swal("成功!", '@ViewData["RGmsg"]', "success");
+        }
+    });
+        function _key() {
+            if (event.keyCode == 13)
+                Send();
+        }
+    function check_change() {
+        debugger;
+        var newpwd = $("#Member_Password").val();
+        var regex = new RegExp(/^(?=.{8,}$)(?=.*\d)(?=.*[a-zA-Z])/, "g");
+        if (newpwd.match(regex) == null) {
+            $("#Member_Password").val('');
+            $("#Member_Password").focus();
+            swal("錯誤!", "密碼複雜度不符合，請至少8碼，並同時含有英數字!", "error");
+            return false;
+        }
+    }
+        function check() {
+            var newacc = $("#Member_Account").val();
+            var regex = new RegExp("^[a-zA-Z0-9]+$");
+            if (newacc.match(regex) == null) {
+                $("#Member_Account").val('');
+                $("#Member_Account").focus();
+                swal("錯誤!", "帳號格式錯誤!", "error");
+                return false;
+            }
+        }
+        function email_check() {
+            var newmail = $("#Member_Mail").val();
+            var regex = new RegExp(/^(([.](?=[^.]|^))|[\w_%{|}#$~`+!?-])+@@(?:[\w-]+\.)+[a-zA-Z.]{2,63}$/);
+            if (newmail.match(regex) == null) {
+                $("#Member_Mail").val('');
+                $("#Member_Mail").focus();
+                swal("錯誤!", "信箱格式錯誤!", "error");
+                return false;
+            }
+        }
+    function check_Account() {
+        debugger;
+        var msg = "";
+        if ($("#Member_Account").val() == "") {
+            swal("錯誤!", "請輸入帳號!", "error");
+            return false;
+        }
+        var Model = {
+            Member_Account: $("#Member_Account").val(),
+        };
+        $.ajax({
+            url: '@Url.Action("check_Member_Account", "Member")',
+            data: Model,
+            type: 'POST',
+            cache: false,
+            async: false,
+            success: function (data) {
+                if (data != '') {
+                    if (data == "Y") {
+                        swal("成功!", "帳號驗證成功!", "success");
+                        msg = "true";
+                        return true;
+                    }
+                    else {
+                        $("#Member_Account").val('');
+                        $("#Member_Account").focus();
+                        swal("錯誤!", "已有此帳號，請更換您的帳號!", "error");
+                        msg = "false";
+                        return false;
+                    }
+                }
+            }
+        });
+        return msg;
+    }
+    function check_check() {
+        debugger;
+
+        if ($("#Member_Password").val() != $("#Check_user_passwd").val()) {
+            $("#Check_user_passwd").val('');
+            $("#Check_user_passwd").focus();
+            swal("錯誤!", "密碼確認有誤，請重新輸入!", "error");
+            return false;
+        }
+        else if ($("#Member_Password").val() == "")
+        {
+            swal("錯誤!", "請輸入密碼!", "error");
+            return false;
+        }
+        else if ($("#Check_user_passwd").val() == "") {
+            swal("錯誤!", "請輸入確認密碼!", "error");
+            return false;
+        }
+        else if ($("#Member_Password").val() == $("#Check_user_passwd").val()) {
+            swal("正確!", "密碼正確!", "success");
+        }
+    }
+    function Send() {
+        debugger;
+        var CMA = check_Account();
+        if ($("#Member_Password").val() != $("#Check_user_passwd").val()) {
+            $("#Check_user_passwd").val('');
+            $("#Check_user_passwd").focus();
+
+            swal("錯誤!", "密碼確認有誤，請重新輸入!", "error");
+            return false;
+        }
+        else if (CMA == "false") {
+            swal("錯誤!", "已有此帳號，請更換您的帳號!", "error");
+            return false;
+        }
+        else if ($('#Member_Name').val() == "") {
+            swal("錯誤!", "請輸入名稱！", "error");
+            return false;
+        }
+        else if ($('#Member_Account').val() == "") {
+            swal("錯誤!", "請輸入帳號！", "error");
+            return false;
+        }
+        else if ($('#Member_Password').val() == "") {
+            swal("錯誤!", "請輸入密碼！", "error");
+            return false;
+        }
+        else if ($('#Member_Mail').val() == "") {
+            swal("錯誤!", "請輸入信箱！", "error");
+            return false;
+        }
+        else if ($('#Member_Address').val() == "") {
+            swal("錯誤!", "請輸入地址！", "error");
+            return false;
+        }
+        else if ($('#Member_Birth').val() == "") {
+            swal("錯誤!", "請輸入生日日期！", "error");
+            return false;
+        }
+        else if ($('#Member_Phone').val() == "") {
+            swal("錯誤!", "請輸入電話號碼！", "error");
+            return false;
+        }
+        else if ($('#Member_Sex').val() == "") {
+            swal("錯誤!", "請輸入性別！", "error");
+            return false;
+        }
+        else if (!$('#accept').is(':checked')) {
+            swal("錯誤!", "請確認是否同意五峰農產品的隱私權政策和使用者條款！", "error");
+            return false;
+        }
+        else {
+            $('#MR_Form').submit();
+        }
+    }
+    </script>
+</body>
+

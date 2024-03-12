@@ -1,0 +1,47 @@
+﻿@{
+    ViewBag.Title = "常見問題";
+}
+<body>
+
+    <style>
+        body {
+            background-color: #e5ffe5;
+            font-family: 'Open Sans', sans-serif;
+        }
+
+        div {
+            /* 字體屬性 */
+            font-family: Arial;
+            font-style: normal;
+            font-weight: 600;
+        }
+
+        body, button, input, select, textarea, h1, h2, h3, h4, h5, h6 {
+            font-family: Microsoft YaHei,'宋體', Tahoma, Helvetica, Arial, "\5b8b\4f53", sans-serif;
+        }
+    </style>
+    <div class="container-fluid">
+        <div class="row content">
+            <div class="col-sm-2 sidenav hidden-xs">
+                <h2>會員專區</h2>
+                <ul class="nav nav-pills nav-stacked">
+                    <li><a href="@Url.Action("Member_Center", "Member")">會員中心</a></li>
+                    <li>
+                        <a href="@Url.Action("Member_Order", "Member")">
+                            (已完成/正在進行中) <br />
+                            訂單查詢
+                        </a>
+                    </li>
+                    <li><a href="@Url.Action("Member_Questions", "Member")">常見問題</a></li>
+                    <li><a href="@Url.Action("Member_Change", "Member")">修改密碼</a></li>
+                    <li><a href="@Url.Action("Logout", "Member")">登出</a></li>
+                </ul><br>
+            </div>
+            <div class="col-sm-8 sidenav hidden-xs">
+                <br />
+                <h2>常見問題</h2>
+                <h3>運輸過程中可能出現問題，食品保鮮問題，可以聯絡我們做退換貨的服務。</h3>
+            </div>
+        </div>
+    </div>
+</body>

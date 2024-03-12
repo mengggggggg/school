@@ -1,0 +1,139 @@
+﻿@model List<MCU_GroupTen.Models.MemberModel>
+
+@{
+    ViewBag.Title = "會員列表";
+}
+<style>
+    table {
+        border-collapse: collapse;
+        width: 770px;
+        /*自動斷行*/
+        word-wrap: break-word;
+        table-layout: fixed;
+    }
+</style>
+<div class="container">
+    <div class="row col-sm-12">
+        <p>
+            @Html.ActionLink("新增會員", "Register", "Member")
+        </p>
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12">
+            <table class="table table-bordered">
+                <thead class="thead-light">
+                    <tr>
+                        <th scope="col"> </th>
+                        <th scope="col">會員帳號</th>
+                        <th scope="col">會員名稱</th>
+                        <th scope="col">會員性別</th>
+                        <th scope="col">會員身分</th>
+                        <th scope="col">會員狀態</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var o in Model)
+                    {
+                        if (Session["Member_Account"].ToString() == o.Member_Account)
+                        {
+                            continue;
+                        }
+                        else if (Html.DisplayFor(modelItem => o.Member_identity).ToString() == "開發者")
+                        {
+                            continue;
+                        }
+                        <tr>
+                            <th scope="row">會員資料</th>
+                            <td>@Html.DisplayFor(modelItem => o.Member_Account)</td>
+                            <td>@Html.DisplayFor(modelItem => o.Member_Name)</td>
+                            <td>
+                                @if (Html.DisplayFor(modelItem => o.Member_Sex).ToString() == "M")
+                                {
+                                    <p style="font-size:20px">男性</p>
+                                }
+                                else if (Html.DisplayFor(modelItem => o.Member_Sex).ToString() == "F")
+                                {
+                                    <p style="font-size:20px">女性</p>
+                                }
+                            </td>
+                            <td>@Html.DisplayFor(modelItem => o.Member_identity)</td>
+                            <td>
+                                @if (Html.DisplayFor(modelItem => o.Member_Status).ToString() == "0")
+                                {
+                                    <p style="font-size:20px">正常權限</p>
+                                }
+                                else if (Html.DisplayFor(modelItem => o.Member_Status).ToString() == "1")
+                                {
+                                    <p style="font-size:20px">已停權</p>
+                                }
+                            </td>
+                            <td><a type="button" style="" class="btn btn-default" href="@Url.Action("uptMember", "BackMember", new { Member_Account = o.Member_Account })">修改</a></td>
+                            <td><a style="" class="btn btn-danger" onclick="deleteMember('@o.Member_Account')"> 停權 </a></td>
+                            <td><a style="" class="btn btn-danger" onclick="updMember('@o.Member_Account')"> 恢復權限 </a></td>
+                            <td><a type="button" class="btn btn-default" style="" href="@Url.Action("DetailMember", "BackMember", new { Member_Account = o.Member_Account })">查看更多</a></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script type="text/javascript">
+    $(function () {
+        if ('@ViewData["ummsg"]' != '') {
+             swal("成功!", '@ViewData["ummsg"]', "success");
+        }
+        else if ('@ViewData["delm"]' != '') {
+             swal("成功!", '@ViewData["delm"]', "success");
+        }
+    });
+    function deleteMember(id) {
+        swal({
+            title: "是否確定停權(包含所有與會員有關的商品和商家等)?",
+            icon: "warning",
+            buttons: {
+                confirm: {
+                    text: "是",
+                    value: "true"
+                },
+                danger: {
+                    text: "否",
+                    value: "false"
+                }
+            }
+        }).then((value) => {
+            if (value == "true") {
+                location.href = "/BackMember/delMember?Member_Account=" + id;
+            }
+            else if (value == "false") {
+                location.href = "@Url.Action("SelectMember", "BackMember")";
+            }
+        });
+    }
+    function updMember(id) {
+        swal({
+            title: "是否確定恢復權限(包含所有與會員有關的商品和商家等)?",
+            icon: "warning",
+            buttons: {
+                confirm: {
+                    text: "是",
+                    value: "true"
+                },
+                danger: {
+                    text: "否",
+                    value: "false"
+                }
+            }
+        }).then((value) => {
+            if (value == "true") {
+                location.href = "/BackMember/updMember?Member_Account=" + id;
+            }
+            else if (value == "false") {
+                location.href = "@Url.Action("SelectMember", "BackMember")";
+            }
+        });
+    }
+</script>

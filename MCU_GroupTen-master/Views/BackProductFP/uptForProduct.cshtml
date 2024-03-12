@@ -1,0 +1,162 @@
+﻿@model MCU_GroupTen.Models.Proshop
+
+@{
+    ViewBag.Title = "修改商品資料";
+    var PSpec = Model.Product_Type;
+}
+@using (Html.BeginForm(ViewContext.RouteData.GetRequiredString("Action"), ViewContext.RouteData.GetRequiredString("Controller"), new { }, FormMethod.Post, new { @class = "form-horizontal row-border validate", @id = "UFP_Form", @enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    <div class="container">
+        <div class="form-horizontal">
+            <h4>修改商品資料</h4>
+            <hr />
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="form-group">
+                <div class="control-label col-md-2">
+                    <label for="">商品名稱:</label>
+                </div>
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Product_Name, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Product_Name, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="control-label col-md-2">
+                    <label for="">商品庫存</label>
+                </div>
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Product_Stock, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Product_Stock, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="control-label col-md-2">
+                    <label for="">商品價格</label>
+                </div>
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Product_Price, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Product_Price, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="control-label col-md-2">
+                    <label for="">商品介紹</label>
+                </div>
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Product_Introduce, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Product_Introduce, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+
+            <div class="form-group">
+                <div class="control-label col-md-2">
+                    <label for="">商品產地</label>
+                </div>
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Product_Origin, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Product_Origin, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="control-label col-md-2">
+                    <label for="">商品規格</label>
+                </div>
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Product_Spec, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Product_Spec, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="control-label col-md-2">
+                    <label for="">更新商品圖片:</label>
+                </div>
+                <div class="col-md-10">
+                    <input type="file" accept=".png, .jpg, .jpeg" name="File" id="File" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="control-label col-md-2">
+                    <label for="">請選擇商品類別:</label>
+                </div>
+                <div class="col-md-10">
+                    @if (PSpec == "肉類")
+                    {
+                        <select name="select" style="width: 250px; height: 40px;">
+                            <option value="" disabled>請選擇商品類別</option>
+                            <option value="肉類" selected>肉類</option>
+                            <option value="蔬菜">蔬菜</option>
+                            <option value="水果">水果</option>
+                            <option value="其他">其他</option>
+                        </select>
+                    }
+                    else if (PSpec == "蔬菜")
+                    {
+                        <select name="select" style="width: 250px; height: 40px;">
+                            <option value="" disabled>請選擇商品類別</option>
+                            <option value="肉類">肉類</option>
+                            <option value="蔬菜" selected>蔬菜</option>
+                            <option value="水果">水果</option>
+                            <option value="其他">其他</option>
+                        </select>
+                    }
+                    else if (PSpec == "水果")
+                    {
+                        <select name="select" style="width: 250px; height: 40px;">
+                            <option value="" disabled>請選擇商品類別</option>
+                            <option value="肉類">肉類</option>
+                            <option value="蔬菜">蔬菜</option>
+                            <option value="水果" selected>水果</option>
+                            <option value="其他">其他</option>
+                        </select>
+                    }
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <button type="button" value="Save" class="btn btn-default" onclick="Send();">更新</button>
+                    <a type="button" class="btn btn-primary" style="" href="@Url.Action("SelectforProduct", "BackProductFP")">回到商品列表</a>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script type="text/javascript">
+    function Send() {
+        debugger;
+        if ($('#Product_Name').val() == "") {
+            swal("錯誤!", "請輸入商品名稱！", "error");
+            return false;
+        }
+        else if ($('#Product_Stock').val() == "") {
+            swal("錯誤!", "請輸入商品庫存！", "error");
+            return false;
+        }
+        else if ($('#Product_Price').val() == "") {
+            swal("錯誤!", "請輸入商品價格！", "error");
+            return false;
+        }
+        else if ($('#Product_Introduce').val() == "") {
+            swal("錯誤!", "請輸入商品介紹！", "error");
+            return false;
+        }
+        else if ($('#Product_Origin').val() == "") {
+            swal("錯誤!", "請輸入商品產地！", "error");
+            return false;
+        }
+        else if ($('#Product_Spec').val() == "") {
+            swal("錯誤!", "請輸入商品規格！", "error");
+            return false;
+        }
+        else {
+            $('#UFP_Form').submit();
+        }
+}
+    </script>
